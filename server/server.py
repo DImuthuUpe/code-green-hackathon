@@ -51,7 +51,7 @@ def foods():
     sql = 'select id, name, image from food where carbon_kilos > 20 order by rand() limit 1'
     foods.append(run_query(db, sql, multi=True))
 
-    return Response(json.dumps(foods), mimetype='application/json')
+    return Response(json.dumps(foods, default=decimal_default), mimetype='application/json')
     
 @app.route('/register', methods=['POST'])
 @cross_origin()
