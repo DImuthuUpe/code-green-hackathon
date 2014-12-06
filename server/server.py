@@ -40,8 +40,16 @@ def countries():
 @app.route('/foods')
 @cross_origin()
 def foods():
-    sql = 'select id, name from food'
-    foods = run_query(db, sql, multi=True)
+    foods = []
+    
+    sql = 'select id, name, image from food where carbon_kilos <= 10 order by rand() limit 1'
+    foods.append(run_query(db, sql, multi=True))
+
+    sql = 'select id, name, image from food where carbon_kilos > 10 and carbon_kilos <=20 order by rand() limit 2'
+    foods.append(run_query(db, sql, multi=True))
+
+    sql = 'select id, name, image from food where carbon_kilos > 20 order by rand() limit 1'
+    foods.append(run_query(db, sql, multi=True))
 
     return Response(json.dumps(foods), mimetype='application/json')
     
