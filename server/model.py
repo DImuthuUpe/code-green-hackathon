@@ -33,9 +33,9 @@ class Country(db.Model):
   id = db.Column('id', db.Integer, primary_key=True)
   name = db.Column('name', db.String(65))
   population = db.Column('population', db.Integer)
-  carbon_per_capita_0 = db.Column('carbon_per_capita_0', db.Float(precision=2))
-  carbon_per_capita_1 = db.Column('carbon_per_capita_1', db.Float(precision=2))
-  carbon_per_capita_2 = db.Column('carbon_per_capita_2', db.Float(precision=2))
+  carbon_per_capita_0 = db.Column('carbon_per_capita_0', db.Float(precision=10))
+  carbon_per_capita_1 = db.Column('carbon_per_capita_1', db.Float(precision=10))
+  carbon_per_capita_2 = db.Column('carbon_per_capita_2', db.Float(precision=10))
   
   def __init__(self, name, popultion, carbon_per_capita_0, carbon_per_capita_1, carbon_per_capita_2):
     self.name = name
@@ -53,9 +53,59 @@ class Country(db.Model):
 
 class Food(db.Model):
   """ Implements the Food model. """
-  pass
+  __tablename__ = "food"
+  id = db.Column('id', db.Integer, primary_key=True)
+  name = db.Column('name', db.String(250))
+  carbon_kilos = db.Column('carbon_kilos', db.Float(precision=10))
+  image = db.Column('image', db.String(255)) 
+
+  def __init__(self, name, carbon_kilos, image):
+    self.name = name
+    self.carbon_kilos = carbon_kilos
+    self.image = image
+
+  def get_id(self):
+    return unicode(self.id)
+
+  def __repr__(self):
+    return '<Food %r>' % (self.id)
 
 
 class Action(db.Model):
   """ Implements the Action model. """
-  pass
+  __tablename__ = "action"
+  id = db.Column('id', db.Integer, primary_key=True)
+  user_id = db.Column('user_id', db.Integer, db.ForeignKey("user.id"))
+  action_type_id = db.Column('action_type_id', db.Integer, db.ForeignKey("action_type.id"))
+  carbon_credit = db.Column('carbon_credit', db.Float(precision=10))
+  carbon_debit = db.Column('carbon_debit', db.Float(precision=10))
+  created_date = db.Column('created_date', db.DateTime)
+
+  def __init__(self, user_id, action_type_id, carbon_credit, carbon_debit):
+    self.user_id = user_id
+    self.action_type_id = action_type_id
+    self.carbon_credit = carbon_credit
+    self.carbon_debit = carbon_debit
+    self.created_date = datetime.datetime.utcnow()
+
+  def get_id(self):
+    return unicode(self.id)
+
+  def __repr__(self):
+    return '<Action %r>' % (self.id)
+
+
+class ActionType(db.Model):
+  """ Implements the Action Type model. """
+  __tablename__ = "action_type"
+  id = db.Column('id', db.Integer, primary_key=True)
+  description = db.Column('description', db.String(45))
+
+  def __init__(self, description):
+    self.description = description
+
+  def get_id(self):
+    return unicode(self.id)
+
+  def __repr__(self):
+    return '<Action Type %r>' % (self.id)
