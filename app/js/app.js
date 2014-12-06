@@ -7,15 +7,15 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform) {
+.run(function($rootScope,$http,$ionicPlatform) {
+    
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
+    $rootScope.host = "http://umkkeb295ebf.madytyoo.koding.io:8081"  
+      
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
     if(window.StatusBar) {
-      // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
   });
@@ -29,6 +29,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Each state's controller can be found in controllers.js
   $stateProvider
     .state('intro', { url: '/', templateUrl: 'templates/intro.html', controller: 'IntroCtrl' })
+    .state('register', { url: '/register', templateUrl: 'templates/register.html', controller: 'RegisterCtrl' })
     // setup an abstract state for the tabs directive
     .state('tab', {
       url: "/tab",
