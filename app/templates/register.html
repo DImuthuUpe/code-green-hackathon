@@ -1,0 +1,10 @@
+<ion-view title="Registration">
+  <ion-content>
+    <h3>Select your Country</h3>
+    <ion-list>
+      <ion-item ng-repeat="c in countries" type="item-text-wrap" ng-click="register(c.id)">
+        {{c.name}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
