@@ -30,14 +30,23 @@ angular.module('starter.controllers', ['ngCookies'])
         })
         
     },100)
-    $scope.register = function(id) {
-        alert("id:" + id)
+    $scope.register = function(country) {
+        var xsrf = { country: country };
+        $http({
+                method: 'POST',
+                url: $rootScope.host+"/register",
+                data: xsrf,
+            }).success(function () {
+                alert("yess")
+            }).error(function() {
+                alert("Error")
+            })
     }
     
 })
 .controller('DashCtrl', function($scope,$rootScope,$location) {
     if(!$rootScope.in) {
-        alert("not in")
+        $location.path("/")
     }
 })
 
