@@ -31,7 +31,7 @@ def ping(cookie):
     
 @app.route('/countries')
 @cross_origin()
-def index():
+def countries():
     sql = 'select id, name from country'
     countries = run_query(db, sql, multi=True)
 
@@ -39,11 +39,11 @@ def index():
 
 @app.route('/foods')
 @cross_origin()
-def index():
+def foods():
     sql = 'select id, name from food'
-    countries = run_query(db, sql, multi=True)
+    foods = run_query(db, sql, multi=True)
 
-    return Response(json.dumps(countries), mimetype='application/json')
+    return Response(json.dumps(foods), mimetype='application/json')
     
 @app.route('/register', methods=['POST'])
 @cross_origin()
