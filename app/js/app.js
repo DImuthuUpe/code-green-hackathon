@@ -28,8 +28,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    .state('intro', { url: '/', templateUrl: 'templates/intro.html', controller: 'IntroCtrl' })
-    .state('register', { url: '/register', templateUrl: 'templates/register.html', controller: 'RegisterCtrl' })
     // setup an abstract state for the tabs directive
     .state('tab', {
       url: "/tab",
@@ -58,16 +56,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
-    .state('tab.friend-detail', {
-      url: '/friend/:friendId',
-      views: {
-        'tab-friends': {
-          templateUrl: 'templates/friend-detail.html',
-          controller: 'FriendDetailCtrl'
-        }
-      }
-    })
-
     .state('tab.tasks', {
       url: '/tasks',
       views: {
@@ -76,8 +64,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
           controller: 'TasksCtrl'
         }
       }
-    });
-
+    })
+    .state('intro', { url: '/', templateUrl: 'templates/intro.html', controller: 'IntroCtrl' })
+    .state('register', { url: '/register', templateUrl: 'templates/register.html', controller: 'RegisterCtrl' })
+    .state('choose', { url: '/select', templateUrl: 'templates/select.html', controller: 'SelectCtrl' })
+    .state('good', { url: '/good', templateUrl: 'templates/good.html', controller: 'SelectCtrl' })
+    .state('bad', { url: '/bad', templateUrl: 'templates/bad.html', controller: 'SelectCtrl' })    
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
 
