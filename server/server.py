@@ -1,3 +1,4 @@
+import uuid
 import json
 
 from flask import Flask, render_template, request, Response
@@ -9,6 +10,7 @@ from model import *
 app = Flask(__name__)
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://@localhost/puppy-earth'
+app.config['CORS_HEADERS'] = "Content-Type"
 app.debug = True
 
 db = SQLAlchemy(app)
@@ -44,19 +46,20 @@ def index():
 @app.route('/register',methods=['POST'])
 @cross_origin()
 def register():
+    cookie = str(uuid.uuid4())
     user_data =  json.loads( request.data )
-    country_id= user_data['country_id']
-    registration = user_data['registration']
+    country_id= user_data['country']
+
     response ={}
-    user = User(int(country_id),0,0,registration)
+    user = User(int(country_id),0,0,cookie)
     try:
         db.session.add(user)
         db.session.flush()
         db.session.commit()
-        response={'message':'success'}
+        response={ 'cookie': cookie }
     except:
         db.session.rollback()
-        response={'message':'fail'}
+        response={'cookie':''}
         
     return Response(json.dumps(response), mimetype='application/json')
     
