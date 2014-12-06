@@ -5,14 +5,14 @@ angular.module('starter.controllers', ['ngCookies'])
          $scope.nextPage = '#/tab/dash';
          var user = $cookies.puppyEarth;    
          
-         if( user == undefined) {
+         if( user === undefined) {
              $scope.nextPage = '#/register';
          } else {
-            $http.get($rootScope.host+"/ping")
+            $http.get($rootScope.host+"/ping/" + user)
             .success(function (data) {
-                alert(data)
+                $scope.nextPage = '#/tab/home';
             }).error(function () {
-                alert("error")
+                $scope.nextPage = '#/register';
             });
              
          }
@@ -21,43 +21,35 @@ angular.module('starter.controllers', ['ngCookies'])
 
 })
 
-.controller('RegisterCtrl', function($scope,$rootScope, $http,$timeout) {
+.controller('RegisterCtrl', function($scope,$rootScope, $http,$timeout,$location,$cookies,$ionicLoading) {
     $scope.countries = []
     $timeout(function() {
-    $http.get($rootScope.host+"/")
+    $http.get($rootScope.host+"/countries")
         .success(function (data) {
             $scope.countries = data
         })
         
     },100)
     $scope.register = function(country) {
-        var xsrf = { country: country };
-        $http({
-                method: 'POST',
-                url: $rootScope.host+"/register",
-                data: xsrf,
-            }).success(function () {
-                alert("yess")
-            }).error(function() {
-                alert("Error")
-            })
+        $ionicLoading.show({ template: 'Please Wait' });
+        $http.post( $rootScope.host + "/register", 
+                    { country: country }
+        ).success(function (data) {
+            $ionicLoading.hide();
+            $cookies.puppyEarth = data.cookie
+            $location.path = "/home"
+        })
+        
     }
     
 })
-.controller('DashCtrl', function($scope,$rootScope,$location) {
-    if(!$rootScope.in) {
-        $location.path("/")
-    }
+.controller('HomeCtrl', function($scope,$rootScope,$location) {
+    //if(!$rootScope.in) {
+    //    $location.path("/home")
+    //}
 })
 
-.controller('FriendsCtrl', function($scope,$rootScope, $http) {
-  $scope.friends = []
-      $http.get($rootScope.host+"/")
-        .success(function (data) {
-            $scope.friends = data
-        }).error(function () {
-            alert("error")
-        });
+.controller('StatsCtrl', function($scope,$rootScope, $http) {
 
 })
 
@@ -65,5 +57,5 @@ angular.module('starter.controllers', ['ngCookies'])
   $scope.friend = Friends.get($stateParams.friendId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('TasksCtrl', function($scope) {
 });
