@@ -44,6 +44,9 @@ angular.module('starter.controllers', ['ngCookies'])
     
 })
 .controller('HomeCtrl', function($scope,$rootScope,$location) {
+    $scope.do_something = function() {
+        $location.path("/select")
+    }
     //if(!$rootScope.in) {
     //    $location.path("/home")
     //}
@@ -52,10 +55,16 @@ angular.module('starter.controllers', ['ngCookies'])
 .controller('StatsCtrl', function($scope,$rootScope, $http) {
 
 })
-
-.controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {
-  $scope.friend = Friends.get($stateParams.friendId);
+.controller('SelectCtrl', function($scope,$rootScope, $http,$location) {
+    $scope.select = function(id) {
+        $location.path("/good")
+    }
 })
+
+.controller('ResultCtrl', function($scope,$rootScope, $http) {
+
+})
+
 
 .controller('TasksCtrl', function($scope) {
 });
