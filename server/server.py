@@ -7,10 +7,11 @@ from flask.ext.cors import cross_origin
 from sqlalchemy import text
 
 from model import *
+from db_utils import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://@localhost/puppy-earth'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/puppy-earth'
 app.config['CORS_HEADERS'] = "Content-Type"
 app.debug = True
 
@@ -20,24 +21,27 @@ db = SQLAlchemy(app)
 @app.route('/ping/<cookie>')
 @cross_origin()
 def ping(cookie):
-    response = {}
-    connection = db.engine.connect()
     sql = 'select id from user where registration = "' + cookie + '"'
-    rows = connection.execute(text(sql))
-    for u in rows:
-        response = (dict(u))
-        
-    return Response(json.dumps(response), mimetype='application/json')
+
+    result = run_query(db, sql)
+    if len(result) < 1:
+      result = {}
+      
+    return Response(json.dumps(result), mimetype='application/json')
     
 @app.route('/countries')
 @cross_origin()
 def index():
-    countries = []
-    connection = db.engine.connect()
     sql = 'select id, name from country'
-    rows = connection.execute(text(sql))
-    for c in rows:
-        countries.append(dict(c.items()))
+    countries = run_query(db, sql, multi=True)
+
+    return Response(json.dumps(countries), mimetype='application/json')
+
+@app.route('/foods')
+@cross_origin()
+def index():
+    sql = 'select id, name from food'
+    countries = run_query(db, sql, multi=True)
 
     return Response(json.dumps(countries), mimetype='application/json')
     
