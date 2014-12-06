@@ -1,5 +1,11 @@
 angular.module('starter.controllers', [])
 
+.controller('IntroCtrl', function($scope,$location) {
+    $scope.start = function() {
+        $location.path = "#/tab/dash"
+    }
+})
+
 .controller('DashCtrl', function($scope) {
 })
 
