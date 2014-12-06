@@ -1,4 +1,5 @@
 from server import db
+import datetime
 
 class User(db.Model):
     __tablename__ = "user"

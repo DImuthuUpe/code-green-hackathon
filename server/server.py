@@ -4,11 +4,12 @@ from flask import Flask, render_template, request, Response
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.cors import cross_origin
 from sqlalchemy import text
-import model
+from model import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://@localhost/puppy-earth'
+app.debug = True
 
 db = SQLAlchemy(app)
 
@@ -44,13 +45,20 @@ def index():
 @cross_origin()
 def register():
     user_data =  json.loads( request.data )
-    
     country_id= user_data['country_id']
     registration = user_data['registration']
-    
-    user = User(1,2,0,'Cookoie')
-    return 'success'
-    
+    response ={}
+    user = User(int(country_id),0,0,registration)
+    try:
+        db.session.add(user)
+        db.session.flush()
+        db.session.commit()
+        response={'message':'success'}
+    except:
+        db.session.rollback()
+        response={'message':'fail'}
+        
+    return Response(json.dumps(response), mimetype='application/json')
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081,threaded=True)
