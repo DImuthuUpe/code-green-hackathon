@@ -52,6 +52,39 @@ def foods():
     foods.append(run_query(db, sql, multi=True))
 
     return Response(json.dumps(foods, default=decimal_default), mimetype='application/json')
+
+@app.route('/food_choice', methods=['POST'])
+@cross_origin()
+def add_food_choice():
+    user_data = json.loads(request.data)
+    user_id = user_data['user_id']
+    food_id = user_data['food_id']
+
+    sql = "select carbon_kilos from food where id = " + food_id
+    food_carbon = run_query(db, sql)
+    
+    sql = "select average(carbon_kilos) from food"
+    average = run_query(db, sql)
+    
+    score = food_carbon - average
+    if score > 0:
+      debit = score
+      credit = 0
+    else:
+      debit = 0
+      credit = score
+
+    action = Action(int(user_id), 1, debit, credit)
+    try:
+        db.session.add(action)
+        db.session.flush()
+        db.session.commit()
+        response = {'score': score}
+    except:
+        db.session.rollback()
+        response = {'error': True}
+    
+    return Response(json.dumps(response), mimetype='application/json')
     
 @app.route('/register', methods=['POST'])
 @cross_origin()
