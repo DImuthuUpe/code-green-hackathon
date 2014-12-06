@@ -8,13 +8,12 @@ angular.module('starter.controllers', ['ngCookies'])
          if( user == undefined) {
              $scope.nextPage = '#/register';
          } else {
-            $http.get($rootScope.host+"/ping")
+            $http.get($rootScope.host+"/ping/" + user)
             .success(function (data) {
-                alert(data)
+                $scope.nextPage = '#/tab/home';
             }).error(function () {
-                alert("error")
-            });
-             
+                $scope.nextPage = '#/register';
+            });             
          }
          
         
