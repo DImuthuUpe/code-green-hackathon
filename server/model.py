@@ -14,17 +14,8 @@ class User(db.Model):
         self.registration = registration
         self.created_date = datetime.datetime.utcnow()
 
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
     def get_id(self):
         return unicode(self.id)
 
     def __repr__(self):
-        return '<User %r>' % (self.username)
+        return '<User %r>' % (self.id)
