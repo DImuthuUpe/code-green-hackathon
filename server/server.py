@@ -42,10 +42,22 @@ Routes:
   /user_time_series:
     Requires the user cookie.
     Example Response:
-      {
-        "credit": [{"2014-12-07": 0.0}], 
-        "debit": [{"2014-12-07": -9.0}]
+      { 
+        "credit": 
+          [{"2014-12-08": 6.0}, {"2014-12-07": 0.0}, {"2014-12-06": 0.0}, {"2014-12-05": 56.0}, {"2014-12-04": 0.0}, {"2014-12-03": 6.0}, {"2014-12-02": 3.0}, {"2014-12-01": 3.0}, {"2014-11-29": 35.0}], 
+        "debit": 
+          [{"2014-12-08": 60.0}, {"2014-12-07": 20.0}, {"2014-12-06": 20.0}, {"2014-12-05": 0.0}, {"2014-12-04": 20.0}, {"2014-12-03": 0.0}, {"2014-12-02": 0.0}, {"2014-12-01": 12.0}, {"2014-11-29": 30.0}]}
       }
+
+  /country_time_series:
+    Requires the user cookie.
+    Example Response:
+      { 
+        {
+          "credit": 
+            [{"2014-11-29": 35.0}, {"2014-12-01": 3.0}, {"2014-12-02": 3.0}, {"2014-12-03": 6.0}, {"2014-12-04": 0.0}, {"2014-12-05": 56.0}, {"2014-12-06": 0.0}, {"2014-12-07": 0.0}, {"2014-12-08": 6.0}], 
+          "debit": 
+            [{"2014-11-29": 60.0}, {"2014-11-30": 0.0}, {"2014-12-01": 65.0}, {"2014-12-02": 0.0}, {"2014-12-03": 5.0}, {"2014-12-04": 43.0}, {"2014-12-05": 7.0}, {"2014-12-06": 20.0}, {"2014-12-07": 43.0}, {"2014-12-08": 60.0}]}      }
       
   /add_task:
     Requires user cookie, ...
@@ -229,10 +241,50 @@ def user_time_series():
       'debit': []
     }
     
-    actions = Action.query.filter_by(user_id=user.id).order_by(Action.created_date.desc()).limit(100).all()
-    for action in actions:
-      response['credit'].append({'{0}'.format(action.created_date): action.carbon_credit})
-      response['debit'].append({'{0}'.format(action.created_date): action.carbon_debit})
+    summed_credits = Action.query.\
+      with_entities(Action.created_date, func.sum(Action.carbon_credit.label('total_credit'))).\
+      filter_by(user_id=user.id).\
+      group_by(Action.created_date).\
+      order_by(Action.created_date.desc()).limit(1000).all()
+    for row in summed_credits:
+      response['credit'].append({'{0}'.format(row[0]): row[1]})
+
+    summed_debits = Action.query.\
+      with_entities(Action.created_date, func.sum(Action.carbon_debit.label('total_debit'))).\
+      filter_by(user_id=user.id).\
+      group_by(Action.created_date).\
+      order_by(Action.created_date.desc()).limit(1000).all()
+    for row in summed_debits:
+      response['debit'].append({'{0}'.format(row[0]): row[1]})
+
+    return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
+
+@app.route('/country_time_series', methods=['POST'])
+@cross_origin()
+def country_time_series():
+    user_data = json.loads(request.data)
+    user_registration = user_data['registration']
+    user = User.query.filter_by(registration=user_registration).first()
+
+    response = {
+      'credit': [],
+      'debit': []
+    }
+
+    summed_credits = Action.query.with_entities(Action.created_date, func.sum(Action.carbon_credit.label('total_credit'))).\
+      join(User, User.id == Action.user_id).\
+      group_by(Action.created_date, User.country_id).\
+      filter_by(country_id=user.country_id).\
+      limit(1000).all()
+    for row in summed_credits:
+      response['credit'].append({'{0}'.format(row[0]): row[1]})
+      
+    summed_debits = Action.query.with_entities(Action.created_date, func.sum(Action.carbon_debit.label('total_debit'))).\
+      join(User, User.id == Action.user_id).\
+      group_by(Action.created_date, User.country_id).\
+      limit(1000).all()
+    for row in summed_debits:
+      response['debit'].append({'{0}'.format(row[0]): row[1]})
 
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
 
