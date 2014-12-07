@@ -133,7 +133,8 @@ def add_food_choice():
     food_id = user_data['food_id']
 
     user_id = User.query.filter_by(registration=user_registration).first().id
-
+    country_id = User.query.filter_by(registration=user_registration).first().country_id
+    
     try:
       food_carbon = Food.query.get(int(food_id)).carbon_kilos
     except:
@@ -148,13 +149,17 @@ def add_food_choice():
     
     score = int(food_carbon - average)
     if score > 0:
-      debit = 0
-      credit = abs(score)
-    else:
-      debit = abs(score)
+      debit = score
       credit = 0
-
-    response = {'score': score}
+    else:
+      debit = 0
+      credit = score
+    
+    sql = "select name from country where id="+str(country_id);
+    results = run_query(db, sql);
+    country_name= results[0]['name']
+    
+    response = {'score': score,'country':country_name}
     action = Action(int(user_id), 1, debit, credit)
     try:
         db.session.add(action)
@@ -225,7 +230,6 @@ def stats():
     target = target_days * float(carbon_per_capita_per_day) * 0.8 * 1000
     
     response = {
-      'total_actions': 23, # replace with count
       'total_credit': total_credit,
       'total_debit': total_debit,
       'credit_trend': credit_trend,
@@ -235,15 +239,6 @@ def stats():
     
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
 
-@app.route('/user', methods=['GET'])
-@cross_origin()
-def user_data():
-    response = {
-      'total_points': 1500, # replace with count
-      'total_tasks': 45,        
-    }
-    return Response(json.dumps(response), mimetype='application/json')
-    
 @app.route('/user_time_series', methods=['GET'])
 @cross_origin()
 def user_time_series():
