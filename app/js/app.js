@@ -11,6 +11,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     
   $ionicPlatform.ready(function() {
     $rootScope.host = "http://umkkeb295ebf.madytyoo.koding.io:8081"  
+     $rootScope.pubnub  = PUBNUB.init({
+          publish_key: 'pub-c-55cf3b7d-b27b-478a-99f3-158762ffcf86',
+          subscribe_key: 'sub-c-1c9e1394-7a15-11e4-82cc-02ee2ddab7fe'
+        });
+
       
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);

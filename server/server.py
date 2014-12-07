@@ -239,6 +239,7 @@ def stats():
 @cross_origin()
 def user_data():
     response = {
+      'recent_points': [7,6,7,8,9,10],     
       'total_points': 1500, # replace with count
       'total_tasks': 45,        
     }

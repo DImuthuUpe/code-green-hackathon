@@ -52,7 +52,7 @@ angular.module('starter.controllers', ['ngCookies'])
                 $scope.total_tasks = data.total_tasks;
                 $scope.total_points = data.total_points;
                 
-                $('#points').sparkline([10,6,7,8,9,10],
+                $('#points').sparkline(data.recent_points,
                     {
                         type: 'bar',
                         height: '40',
@@ -96,6 +96,9 @@ angular.module('starter.controllers', ['ngCookies'])
         ).success(function (data) {
             console.log(data)
              if( data.score <= 0 ) {
+                $rootScope.pubnub.publish({
+                    channel: 'codegreen_channel',
+                    message: {"country":"Sri Lanka","amount":Math.abs(data.score)} });
                 $location.path( "/tab/good/" + Math.abs(data.score) )
              } else {
                 $location.path( "/tab/bad/" + Math.abs(data.score) )
