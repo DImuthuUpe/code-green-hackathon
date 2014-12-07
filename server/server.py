@@ -66,14 +66,24 @@ Routes:
         "debit": 
           [{"date": "2014-11-29", "value": 60.0}, {"date": "2014-11-30", "value": 0.0}, {"date": "2014-12-01", "value": 65.0}, {"date": "2014-12-02", "value": 0.0}, {"date": "2014-12-03", "value": 5.0}, {"date": "2014-12-04", "value": 43.0}, {"date": "2014-12-05", "value": 7.0}, {"date": "2014-12-06", "value": 20.0}, {"date": "2014-12-07", "value": 43.0}, {"date": "2014-12-08", "value": 60.0}]
       }
-      
-   /user
-   Requires the user cookie
-   Example Response
+  
+  /top_countries:
+    Requires no parameters.
+    Example Response:
       {
-        "total_points": -88
-        "total_tasks": 1
-      }
+        "savings": 
+          [{"country": "United States", "savings": 14.333333333333334, "ratio": 1.2976744186046512, "emissions": 18.6}, {"country": "Aruba", "savings": 0, "ratio": 22.58, "emissions": 22.58}, {"country": "Andorra", "savings": 0, "ratio": 6.74, "emissions": 6.74}, {"country": "Afghanistan", "savings": 0, "ratio": 0.15, "emissions": 0.15}, {"country": "Angola", "savings": 0, "ratio": 1.45, "emissions": 1.45}, {"country": "Albania", "savings": 0, "ratio": 1.42, "emissions": 1.42}, {"country": "Arab World", "savings": 0, "ratio": 4.44, "emissions": 4.44}, {"country": "United Arab Emirates", "savings": 0, "ratio": 23.38, "emissions": 23.38}, {"country": "Argentina", "savings": 0, "ratio": 4.79, "emissions": 4.79}, {"country": "Armenia", "savings": 0, "ratio": 1.87, "emissions": 1.87}], 
+        "ratios": 
+          [{"country": "Lesotho", "savings": 0, "ratio": 0.01, "emissions": 0.01}, {"country": "Burundi", "savings": 0, "ratio": 0.03, "emissions": 0.03}, {"country": "Mali", "savings": 0, "ratio": 0.05, "emissions": 0.05}, {"country": "Rwanda", "savings": 0, "ratio": 0.05, "emissions": 0.05}, {"country": "Chad", "savings": 0, "ratio": 0.05, "emissions": 0.05}, {"country": "Congo, Dem. Rep.", "savings": 0, "ratio": 0.05, "emissions": 0.05}, {"country": "Central African Republic", "savings": 0, "ratio": 0.06, "emissions": 0.06}, {"country": "Niger", "savings": 0, "ratio": 0.06, "emissions": 0.06}, {"country": "Somalia", "savings": 0, "ratio": 0.07, "emissions": 0.07}, {"country": "Eritrea", "savings": 0, "ratio": 0.08, "emissions": 0.08}]
+      }      
+  
+  /user
+  Requires the user cookie
+  Example Response
+    {
+      "total_points": -88
+      "total_tasks": 1
+    }
 """
 
 
@@ -319,6 +329,43 @@ def country_time_series():
 
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
 
+@app.route('/top_countries', methods=['GET'])                                                                                                                           
+@cross_origin()                                                                                                                                                         
+def top_countries():
+    country_list = []
+    country_stats = {}
+    countries = Country.query.all()
+    for country in countries:
+      sql = "select user_id, sum(carbon_credit)-sum(carbon_debit) as savings from action " \
+        "join user on user.id = action.user_id where user.country_id = " + str(country.id) + " group by user_id;"
+      results = run_query(db, sql)
+      
+      if country.carbon_per_capita_0 < 0:
+        continue
+      
+      avg_savings = 0
+      if len(results) > 0:
+        num_users = 0
+        for row in results:
+          num_users += 1
+          avg_savings += row["savings"] if row["savings"] > 0 else 0
+        avg_savings /= num_users if num_users > 0 else 0
+
+      country_stats["country"] = country.name
+      country_stats["savings"] = avg_savings if avg_savings > 0 else 0
+      country_stats["ratio"] = country.carbon_per_capita_0 / country_stats["savings"] if country_stats["savings"] > 0 else country.carbon_per_capita_0
+      country_list.append(country_stats)
+      country_stats = {}
+
+    country_savings = sorted(country_list, key = lambda k : k["savings"], reverse=True)[:10]
+    country_ratios = sorted(country_list, key = lambda k : k["ratio"])[:10]
+    response = {
+      "savings": country_savings,
+      "ratios": country_ratios
+    }
+    
+    return Response(json.dumps(response, default=decimal_default), mimetype='application/json')  
+
 @app.route('/register', methods=['POST'])
 @cross_origin()
 def register():
@@ -382,3 +429,4 @@ def user():
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081, threaded=True)
+    
