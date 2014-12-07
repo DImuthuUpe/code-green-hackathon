@@ -1,3 +1,40 @@
+""" Handles REST calls from app and dashboard. 
+
+Routes:
+  /register: 
+    Requires the country ID.
+    
+  /ping/<cookie>:
+    Requires the user cookie.
+    
+  /countries:
+    Requires no parameters.
+    
+  /foods:
+    Requires no parameters.
+    
+  /food_choice:
+    Requires user cookie and food ID.
+    Example Response:
+      { "score" : "-100" }
+    Example Error:
+      { "error" : "True" }
+
+  /stats:
+    Requires user cookie.
+    Example Response:
+      {
+        "credit_trend": null,
+        "debit_trend": null,
+        "total_credit": 0,
+        "total_debit": -9,
+        "target": "0.041"
+      }
+      
+  /add_task:
+    Requires user cookie, ...
+"""
+
 
 import datetime
 import uuid
