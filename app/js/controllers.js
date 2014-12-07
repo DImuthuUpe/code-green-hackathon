@@ -113,22 +113,21 @@ angular.module('starter.controllers', ['ngCookies'])
     $scope.index = 0
     $scope.food = []
     $scope.list = []
-    $timeout(function() {
-        $http.get($rootScope.host+"/foods")
-            .success(function (data) {
-                 $scope.list  = data
-                 $timeout(function() {
-                    for (var i = 0; i < $scope.list.length; i++) {
-                        $timeout(function () {
-                            $scope.food.push( $scope.list[$scope.index++] );
-                        }, 100 * i);
-                    };
-                },200)
-
-            })
-        
-    },100)
     
+    $http.get($rootScope.host+"/foods")
+        .success(function (data) {
+             $scope.list  = data
+             $timeout(function() {
+                for (var i = 0; i < $scope.list.length; i++) {
+                    $timeout(function () {
+                        $scope.food.push( $scope.list[$scope.index++] );
+                    }, 100 * i);
+                };
+            },200)
+
+        })
+        
+
     
     $scope.select = function(id) {
        
