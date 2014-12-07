@@ -57,9 +57,11 @@ def foods():
 @cross_origin()
 def add_food_choice():
     user_data = json.loads(request.data)
-    user_id = user_data['user_id']
+    user_registration = user_data['registration']
     food_id = user_data['food_id']
-      
+
+    user_id = User.query.filter_by(registration=user_registration).first().id
+
     try:
       food_carbon = Food.query.get(int(food_id)).carbon_kilos
     except:
