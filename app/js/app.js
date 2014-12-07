@@ -46,7 +46,34 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
-
+    .state('tab.select', {
+      url: '/select',
+      views: {
+        'tab-home': {
+          templateUrl: 'templates/tab-select.html',
+          controller: 'SelectCtrl'
+        }
+      }
+    })
+    .state('tab.good', {
+      url: '/good',
+      views: {
+        'tab-home': {
+          templateUrl: 'templates/good.html',
+          controller: 'SelectCtrl'
+        }
+      }
+    })
+    .state('tab.bad', {
+      url: '/bad',
+      views: {
+        'tab-home': {
+          templateUrl: 'templates/bad.html',
+          controller: 'SelectCtrl'
+        }
+      }
+    })
+    
     .state('tab.stats', {
       url: '/stats',
       views: {
@@ -67,9 +94,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
     .state('intro', { url: '/', templateUrl: 'templates/intro.html', controller: 'IntroCtrl' })
     .state('register', { url: '/register', templateUrl: 'templates/register.html', controller: 'RegisterCtrl' })
-    .state('choose', { url: '/select', templateUrl: 'templates/select.html', controller: 'SelectCtrl' })
-    .state('good', { url: '/good', templateUrl: 'templates/good.html', controller: 'SelectCtrl' })
-    .state('bad', { url: '/bad', templateUrl: 'templates/bad.html', controller: 'SelectCtrl' })    
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
 

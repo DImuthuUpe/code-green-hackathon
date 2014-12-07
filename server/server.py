@@ -154,15 +154,16 @@ def add_food_choice():
       debit = 0
       credit = score
 
+    response = {'score': score}
     action = Action(int(user_id), 1, debit, credit)
     try:
         db.session.add(action)
         db.session.flush()
         db.session.commit()
-        response = {'score': score}
     except:
         db.session.rollback()
-        response = {'error': True}
+        #response = {'error': True}
+    
     
     return Response(json.dumps(response), mimetype='application/json')
 
