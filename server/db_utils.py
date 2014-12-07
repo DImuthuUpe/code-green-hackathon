@@ -26,7 +26,5 @@ def run_query(db, query, multi=False):
     else:
       result.append(dict(c))
   connection.close()
-  
-  print result
-  
+
   return result

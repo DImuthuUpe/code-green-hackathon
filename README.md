@@ -6,5 +6,8 @@ code-green-hackathon
 * MySQL
 * Flask
 * SQLAlchemy
+* Keen IO Dashboard
+* CanvasJS
 * AngularJS
 * Ionic
+* PubNub
