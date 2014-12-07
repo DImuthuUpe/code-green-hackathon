@@ -17,6 +17,6 @@ This is an application that provides information about the global warming and in
 * [CanvasJS](http://canvasjs.com/)
 * [Ionic Framework](http://ionicframework.com/)
 
-### APIS used:
+### APIs used:
 * [PubNub API](http://www.pubnub.com/)
 * [World Bank Open Data](http://data.worldbank.org/)
