@@ -78,6 +78,12 @@
 	animation:slideInUp 0.3s both ease-in;
 }
 
+.scale-fade-in 	{
+    -webkit-animation:scaleUp 0.2s both ease-in;
+	-moz-animation:scaleUp.2s both ease-in;
+	animation:scaleUp 0.2s both ease-in;
+}
+
 /* scale up */
 @keyframes scaleUp {
 	from 		{ opacity: 0.3; transform: scale(0.2); }

@@ -110,11 +110,21 @@ angular.module('starter.controllers', ['ngCookies'])
 
 })
 .controller('SelectCtrl', function($scope,$rootScope, $http,$cookies,$location,$timeout) {
+    $scope.index = 0
     $scope.food = []
+    $scope.list = []
     $timeout(function() {
         $http.get($rootScope.host+"/foods")
             .success(function (data) {
-                $scope.food = data
+                 $scope.list  = data
+                 $timeout(function() {
+                    for (var i = 0; i < $scope.list.length; i++) {
+                        $timeout(function () {
+                            $scope.food.push( $scope.list[$scope.index++] );
+                        }, 100 * i);
+                    };
+                },200)
+
             })
         
     },100)
@@ -145,8 +155,20 @@ angular.module('starter.controllers', ['ngCookies'])
     $scope.bad = "bad" + (Math.floor(Math.random() * 3) + 1) + ".png"
     $scope.score = $stateParams.score
 
-}).controller('TasksCtrl', function($scope) {
-    $scope.tasks = [ { id: 1, title: "Buy organically grown food"}]
+}).controller('TasksCtrl', function($scope,$timeout) {
+    $scope.index = 0
+    $scope.tasks = []
+    $scope.list = [ { id: 1, title: "Buy organically grown food"},
+                    { id: 2, title: "Buyww organically grown food"}]
+    
+    $timeout(function() {
+            for (var i = 0; i < $scope.list.length; i++) {
+                $timeout(function () {
+                    $scope.tasks.push( $scope.list[$scope.index++] );
+                }, 100 * i);
+            };
+        },200)
+    
 }).controller('TaskCtrl', function($scope,$stateParams, $http,$location) {
     $scope.id  = $stateParams.id
     $scope.task =  { id: 1, title: "Buy organically grown food",content:"In addition to the health benefits, the pesticides and artificial fertilizers used on non ­organic food are made using lots of fossil fuel and venting much greenhouse gas."}
