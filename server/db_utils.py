@@ -22,7 +22,6 @@ def run_query(db, query, multi=False):
   rows = connection.execute(text(query))
   for c in rows:
     if multi:
-      for item in c:
       result.append(dict(c.items()))
     else:
       result.append(dict(c))
