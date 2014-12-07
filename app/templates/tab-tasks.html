@@ -1,5 +1,10 @@
 <ion-view title="Tasks">
-  <ion-content class="padding">
-    <h1>Tasks</h1>
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="t in tasks" type="item-text-wrap" href="#/tab/task/{{t.id}}">
+        {{t.title}}
+      </ion-item>
+    </ion-list>
+    
   </ion-content>
 </ion-view>

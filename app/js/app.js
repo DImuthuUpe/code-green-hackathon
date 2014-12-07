@@ -97,6 +97,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
+    .state('tab.task', {
+      url: '/task/:id',
+      views: {
+        'tab-tasks': {
+          templateUrl: 'templates/tab-task.html',
+          controller: 'TaskCtrl'
+        }
+      }
+    })
     .state('intro', { url: '/', templateUrl: 'templates/intro.html', controller: 'IntroCtrl' })
     .state('register', { url: '/register', templateUrl: 'templates/register.html', controller: 'RegisterCtrl' })
   // if none of the above states are matched, use this as the fallback
