@@ -190,9 +190,7 @@ def add_food_choice():
         db.session.commit()
     except:
         db.session.rollback()
-        #response = {'error': True}
-    
-    
+
     return Response(json.dumps(response), mimetype='application/json')
 
 @app.route('/add_task', methods=['POST'])
@@ -362,8 +360,8 @@ def top_countries():
       country_list.append(country_stats)
       country_stats = {}
 
-    country_savings = sorted(country_list, key = lambda k : k["savings"], reverse=True)[:10]
-    country_ratios = sorted(country_list, key = lambda k : k["ratio"])[:10]
+    country_savings = sorted(country_list, key = lambda k : k["savings"], reverse=True)[:5]
+    country_ratios = sorted(country_list, key = lambda k : k["ratio"])[:5]
     response = {
       "savings": country_savings,
       "ratios": country_ratios
@@ -431,9 +429,8 @@ def user():
     response = {'total_points': int(points),'total_tasks': int(total_tasks),'recent_points':recent_points}
     return Response(json.dumps(response), mimetype='application/json')
     
-    
+  
 def assign_task(user_id):
-    #user_id = request.args.get('user_id')
     sql = 'select id from tasks where id not in (select task_id from task where user_id='+str(user_id)+' and status="P")'; 
     results = run_query(db, sql);
     if(len(results)>0):
@@ -448,7 +445,6 @@ def assign_task(user_id):
         except:
             db.session.rollback()
             print "Error creating task"
-    
 
     
 if __name__ == "__main__":
