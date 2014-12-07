@@ -4,8 +4,8 @@
       <div class="col">
         <a class="item item-thumbnail-left">
           <img ng-src="img/up.png" height="80">
-          <h2 style="color:#9ABC32;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">Carbon Credit</h2>
-          <h1 style="color:#9ABC32;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">{{total_credit}} Kg
+          <h2 class="good">Carbon Credit</h2>
+          <h1 class="good">{{total_credit}} Kg
               <i class="icon ion-arrow-{{credit_trend}}-c"></i>
           </h1>
         </a>
@@ -15,11 +15,9 @@
       <div class="col">
         <a class="item item-thumbnail-left">
           <img ng-src="img/down.png" height="80">
-          <h2 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">Carbon Debit</h2>
-          <h1 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">{{total_debit}} Kg 
+          <h2 class="bad">Carbon Debit</h2>
+          <h1 class="bad">{{total_debit}} Kg 
             <i class="icon ion-arrow-{{debit_trend}}-c"></i>
-
-              
           </h1>
         </a>
       </div>
@@ -27,13 +25,18 @@
     <div class="row" style="padding:10px">
       <div class="col">
         <a class="item item-thumbnail-left">
-          <img ng-src="img/down.png" height="80">
-          <h2 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">Carbon Debit</h2>
-          <h1 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">{{total_debit}} Kg 
-            <i class="icon ion-arrow-{{debit_trend}}-c"></i>
-
-              
-          </h1>
+          <img ng-src="img/{{image}}" height="80">
+          <h2 ng-class="{good: delta >= 0, bad: delta < 0}">Total</h2>
+          <h1 ng-class="{good: delta >= 0, bad: delta < 0}">{{delta}} Kg</h1>
+        </a>
+      </div>
+    </div>
+    <div class="row" style="padding:10px">
+      <div class="col">
+        <a class="item item-thumbnail-left">
+          <img ng-src="img/target.png" height="80">
+          <h2 class="target">Target</h2>
+          <h1 class="target">{{target}} Kg</h1>
         </a>
       </div>
     </div>

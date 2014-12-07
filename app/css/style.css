@@ -34,3 +34,18 @@
     top: 0px;
     left: 0px;
 }
+
+.good {
+    color:#9ABC32;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);
+}
+
+.bad {
+    color:#D53F40;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);
+}
+
+.target {
+    color:#6FB3E0;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);
+}
