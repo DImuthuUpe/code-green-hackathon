@@ -19,6 +19,4 @@ This is an application that provides information about the global warming and in
 
 ### APIS used:
 * [PubNub API](http://www.pubnub.com/)
- 
-### APIS used:
 * [World Bank Open Data](http://data.worldbank.org/)
