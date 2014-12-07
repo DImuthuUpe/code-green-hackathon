@@ -420,6 +420,22 @@ def assign_task(user_id):
         except:
             db.session.rollback()
             print "Error creating task"
-    
+
+@app.route('/p_tasks', methods=['GET'])                                                                                         
+@cross_origin()                                                                                                                 
+def get_p_tasks():                                                                                                              
+    user_registration = request.args.get('registration')                                                                        
+    if not user_registration:                                                                                                   
+      return Response(json.dumps({}), mimetype='application/json')                                                              
+                                                                                                                                
+    user_id = User.query.filter_by(registration=user_registration).first().id()                                                 
+    tasks = Task.query.filter_by(user_id=user_id, status='P').all()                                                             
+                                                                                                                                
+    response = {'tasks': []}                                                                                                    
+    task_list = []                                                                                                              
+    for task in tasks:                                                                                                          
+      response['tasks'].append(dict(task))                                                                                      
+    return Response(json.dumps(response), mimetype='application/json') 
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081, threaded=True)
