@@ -49,17 +49,29 @@ angular.module('starter.controllers', ['ngCookies'])
 .controller('StatsCtrl', function($scope,$rootScope, $http) {
 
 })
-.controller('SelectCtrl', function($scope,$rootScope, $http,$cookies,$location) {
-    $scope.food = [ {"image": "yoghurt-granola-fruit.png", "id": 94, "name": "Yogurt, Seasonal Fruit, Granola"} ]
+.controller('SelectCtrl', function($scope,$rootScope, $http,$cookies,$location,$timeout) {
+    $scope.food = []
+    $timeout(function() {
+        $http.get($rootScope.host+"/foods")
+            .success(function (data) {
+                $scope.food = data
+            })
+        
+    },100)
+    
     
     $scope.select = function(id) {
-        $location.path( "/tab/good" )
-        //$http.post( $rootScope.host + "/food_choice", 
-        //    { registration:  $cookies.puppyEarth , food_id: id }
-        //).success(function (data) {
-        //    console.log(data)
-        //    $location.path = "/good"
-        //})
+       
+        $http.post( $rootScope.host + "/food_choice", 
+            { registration:  $cookies.puppyEarth , food_id: id }
+        ).success(function (data) {
+            console.log(data)
+             if( data.score <= 0 ) {
+                $location.path( "/tab/good" )
+             } else {
+                $location.path( "/tab/bad" )
+             }
+        })
 
         
     }
