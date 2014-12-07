@@ -5,7 +5,9 @@
         <a class="item item-thumbnail-left">
           <img ng-src="img/up.png" height="80">
           <h2 style="color:#9ABC32;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">Carbon Credit</h2>
-          <h1 style="color:#9ABC32;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">1234 Kg</h1>
+          <h1 style="color:#9ABC32;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">{{total_credit}} Kg
+              <i class="icon ion-arrow-{{credit_trend}}-c"></i>
+          </h1>
         </a>
       </div>
     </div>
@@ -14,7 +16,24 @@
         <a class="item item-thumbnail-left">
           <img ng-src="img/down.png" height="80">
           <h2 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">Carbon Debit</h2>
-          <h1 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">1234 Kg <i class="icon ion-arrow-up-c"></i></h1>
+          <h1 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">{{total_debit}} Kg 
+            <i class="icon ion-arrow-{{debit_trend}}-c"></i>
+
+              
+          </h1>
+        </a>
+      </div>
+    </div>
+    <div class="row" style="padding:10px">
+      <div class="col">
+        <a class="item item-thumbnail-left">
+          <img ng-src="img/down.png" height="80">
+          <h2 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">Carbon Debit</h2>
+          <h1 style="color:#D53F40;text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);">{{total_debit}} Kg 
+            <i class="icon ion-arrow-{{debit_trend}}-c"></i>
+
+              
+          </h1>
         </a>
       </div>
     </div>

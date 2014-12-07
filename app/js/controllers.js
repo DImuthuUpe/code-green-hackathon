@@ -59,11 +59,11 @@ angular.module('starter.controllers', ['ngCookies'])
                         barWidth: 6,
                         chartRangeMin :0,
                         chartRangeMax :10,
-                        barColor: '#00bf00',
+                        barColor: '#9ABC32',
                         negBarColor: '#f04040 '
                     });
                 $('#tasks').easyPieChart({
-                    barColor: '#00bf00',
+                    barColor: '#9ABC32',
                     trackColor: '#E2E2E2',
                     scaleColor: false,
                     lineCap: 'butt',
@@ -75,7 +75,18 @@ angular.module('starter.controllers', ['ngCookies'])
             })
 })
 
-.controller('StatsCtrl', function($scope,$rootScope, $http) {
+.controller('StatsCtrl', function($scope,$rootScope, $http ,$cookies) {
+    $scope.total_debit = 0 
+    $scope.total_credit = 0
+    $http.get($rootScope.host+"/stats?registration=" + $cookies.puppyEarth )
+        .success(function (data) {
+            $scope.total_debit = data.total_debit
+            $scope.debit_trend = data.debit_trend            
+            $scope.total_credit = data.total_credit
+            $scope.credit_trend = data.credit_trend
+            
+        })
+    
 
 })
 .controller('SelectCtrl', function($scope,$rootScope, $http,$cookies,$location,$timeout) {
