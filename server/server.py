@@ -155,13 +155,13 @@ def add_food_choice():
     else:
       average = 0
     
-    score = int(food_carbon - average)
-    if score > 0:
-      debit = score
+    score = int(average-food_carbon)
+    if score < 0:
+      debit = abs(score)
       credit = 0
     else:
       debit = 0
-      credit = score
+      credit = abs(score)
     
     sql = "select name from country where id="+str(country_id);
     results = run_query(db, sql);
