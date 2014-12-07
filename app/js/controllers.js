@@ -24,10 +24,10 @@ angular.module('starter.controllers', ['ngCookies'])
 .controller('RegisterCtrl', function($scope,$rootScope, $http,$timeout,$location,$cookies,$ionicLoading) {
     $scope.countries = []
     $timeout(function() {
-    $http.get($rootScope.host+"/countries")
-        .success(function (data) {
-            $scope.countries = data
-        })
+        $http.get($rootScope.host+"/countries")
+            .success(function (data) {
+                $scope.countries = data
+            })
         
     },100)
     $scope.register = function(country) {
@@ -37,27 +37,31 @@ angular.module('starter.controllers', ['ngCookies'])
         ).success(function (data) {
             $ionicLoading.hide();
             $cookies.puppyEarth = data.cookie
-            $location.path = "/home"
+            $location.path ("/tab/home")
         })
         
     }
     
 })
 .controller('HomeCtrl', function($scope,$rootScope,$location) {
-    $scope.do_something = function() {
-        $location.path("/select")
-    }
-    //if(!$rootScope.in) {
-    //    $location.path("/home")
-    //}
 })
 
 .controller('StatsCtrl', function($scope,$rootScope, $http) {
 
 })
-.controller('SelectCtrl', function($scope,$rootScope, $http,$location) {
+.controller('SelectCtrl', function($scope,$rootScope, $http,$cookies,$location) {
+    $scope.food = [ {"image": "yoghurt-granola-fruit.png", "id": 94, "name": "Yogurt, Seasonal Fruit, Granola"} ]
+    
     $scope.select = function(id) {
-        $location.path("/good")
+        $location.path( "/tab/good" )
+        //$http.post( $rootScope.host + "/food_choice", 
+        //    { registration:  $cookies.puppyEarth , food_id: id }
+        //).success(function (data) {
+        //    console.log(data)
+        //    $location.path = "/good"
+        //})
+
+        
     }
 })
 
@@ -67,4 +71,5 @@ angular.module('starter.controllers', ['ngCookies'])
 
 
 .controller('TasksCtrl', function($scope) {
+    
 });
