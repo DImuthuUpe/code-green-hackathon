@@ -117,7 +117,7 @@ class Task(db.Model):
   id = db.Column('id', db.Integer, primary_key=True)
   user_id = db.Column('user_id', db.Integer, db.ForeignKey("user.id"))
   text = db.Column('text', db.String(45))
-  status = db.Column('status', db.Bool)
+  status = db.Column('status', db.String(1))
   created_date = db.Column('created_date', db.DateTime)
   carbon_credit = db.Column('carbon_credit', db.Float(precision=10))
   carbon_debit = db.Column('carbon_debit', db.Float(precision=10))

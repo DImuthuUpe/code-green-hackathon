@@ -14,14 +14,14 @@ Routes:
     Requires no parameters.
     
   /food_choice:
-    Requires user cookie and food ID.
+    Requires the user cookie and a food ID.
     Example Response:
       { "score" : "-100" }
     Example Error:
       { "error" : "True" }
 
   /stats:
-    Requires user cookie.
+    Requires the user cookie.
     Example Response:
       {
         "credit_trend": null,
@@ -29,6 +29,22 @@ Routes:
         "total_credit": 0,
         "total_debit": -9,
         "target": "0.041"
+      }
+      
+      {
+        "credit_trend": "down",
+        "debit_trend": "up",
+        "total_credit": -1,
+        "total_debit": 11,
+        "target": "0.041"
+      }
+      
+  /user_time_series:
+    Requires the user cookie.
+    Example Response:
+      {
+        "credit": [{"2014-12-07": 0.0}], 
+        "debit": [{"2014-12-07": -9.0}]
       }
       
   /add_task:
@@ -200,7 +216,26 @@ def stats():
     }
     
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
+
+@app.route('/user_time_series', methods=['POST'])
+@cross_origin()
+def user_time_series():
+    user_data = json.loads(request.data)
+    user_registration = user_data['registration']
+    user = User.query.filter_by(registration=user_registration).first()
     
+    response = {
+      'credit': [],
+      'debit': []
+    }
+    
+    actions = Action.query.filter_by(user_id=user.id).order_by(Action.created_date.desc()).limit(100).all()
+    for action in actions:
+      response['credit'].append({'{0}'.format(action.created_date): action.carbon_credit})
+      response['debit'].append({'{0}'.format(action.created_date): action.carbon_debit})
+
+    return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
+
 @app.route('/register', methods=['POST'])
 @cross_origin()
 def register():
