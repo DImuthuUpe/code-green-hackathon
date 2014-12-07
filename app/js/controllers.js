@@ -43,15 +43,25 @@ angular.module('starter.controllers', ['ngCookies'])
     }
     
 })
-.controller('HomeCtrl', function($scope,$rootScope,$http,$location,$cookies) {
+.controller('HomeCtrl', function($scope,$rootScope,$http,$location,$cookies,$timeout) {
     $scope.total_tasks = 0;
     $scope.total_points = 0;
+    $scope.mood = "healthy.png"
+    
+  
     
      $http.get($rootScope.host+"/user?registration=" + $cookies.puppyEarth)
             .success(function (data) {
                 $scope.total_tasks = data.total_tasks;
                 $scope.total_points = data.total_points;
-                
+                var r = (Math.floor(Math.random() * 4) + 1)
+                if(r == 1) {
+                    $scope.mood = "healthy.png"
+                } else if(r == 2) {
+                    $scope.mood = "bad2.png"
+                } else  if(r == 3) {
+                    $scope.mood = "hungry.png"
+                }
                 $('#points').sparkline(data.recent_points,
                     {
                         type: 'bar',
