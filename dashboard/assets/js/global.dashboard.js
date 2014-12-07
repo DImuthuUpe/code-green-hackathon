@@ -1,30 +1,6 @@
 // Placeholder for Global Dashboard charts.
 $( document ).ready(function() {
-	var carbon_usage_pichart = new CanvasJS.Chart("chart-02",
-	{
-		legend:{
-			verticalAlign: "bottom",
-			horizontalAlign: "center"
-		},
-		data: [
-		{        
-			indexLabelFontSize: 20,
-			indexLabelFontFamily: "Monospace",       
-			indexLabelFontColor: "darkgrey", 
-			indexLabelLineColor: "darkgrey",        
-			indexLabelPlacement: "outside",
-			type: "pie",       
-			showInLegend: true,
-			toolTipContent: "{y} - <strong>#percent%</strong>",
-			dataPoints: [
-				{  y: 4181563, legendText:"Food", indexLabel: "Food" },
-				{  y: 2175498, legendText:"Travel", indexLabel: "Travel" },
-				{  y: 3125844, legendText:"Other",exploded: true, indexLabel: "Household" }
-			]
-		}
-		]
-	});
-	carbon_usage_pichart.render();
+	
 	
 	
 	var country_carbon_debit_chart = new CanvasJS.Chart("chart-01",
@@ -93,8 +69,7 @@ $( document ).ready(function() {
 
     country_carbon_debit_chart.render();
     
-    
-    
+    draw_user_action_graph('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
     draw_user_carbon_save_graph('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
     draw_country_carbon_save_graph('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
     
@@ -102,6 +77,53 @@ $( document ).ready(function() {
     
     
 });
+
+
+function draw_user_action_graph(server,cookie){
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+                
+        data: JSON.stringify({'registration':'Cookie1'}), //get the cookie from browse
+        url: server+":8081/user_actions?registration="+cookie,
+        type: "GET",
+        dataType: 'json',
+        success: function (result) {
+            var actionResult =[];
+            for (var i = 0; i < result.actions.length; i++) {
+                var tuple={};
+                tuple.y= result.actions[i].count;
+                tuple.legendText=result.actions[i].action;
+                tuple.indexLabel=result.actions[i].action;
+                actionResult[i] = tuple;
+                //{  y: 4181563, legendText:"Food", indexLabel: "Food" }
+            }
+            
+            var user_action_pichart = new CanvasJS.Chart("chart-02",
+            {
+                legend:{
+                    verticalAlign: "bottom",
+                    horizontalAlign: "center"
+                },
+                data: [
+                {        
+                    indexLabelFontSize: 20,
+                    indexLabelFontFamily: "Monospace",       
+                    indexLabelFontColor: "darkgrey", 
+                    indexLabelLineColor: "darkgrey",        
+                    indexLabelPlacement: "outside",
+                    type: "pie",       
+                    showInLegend: true,
+                    toolTipContent: "{y} - <strong>#percent%</strong>",
+                    dataPoints: actionResult
+                }
+                ]
+            });
+            user_action_pichart.render();
+            
+            console.log(actionResult);
+        }
+    });
+}
 
 function draw_user_carbon_save_graph(server,cookie){
     $.ajax({
@@ -113,7 +135,7 @@ function draw_user_carbon_save_graph(server,cookie){
         dataType: 'json',
         success: function (result) {
             var consumption =[];
-            console.log(result);
+            //console.log(result);
             for (var i = 0; i < result.credit.length; i++) {
                 var tuple = {};
                 var dates = (result.credit[i].date).split("-");
@@ -149,7 +171,7 @@ function draw_country_carbon_save_graph(server,cookie){
         dataType: 'json',
         success: function (result) {
             var consumption =[];
-            console.log(result);
+            //console.log(result);
             for (var i = 0; i < result.credit.length; i++) {
                 var tuple = {};
                 var dates = (result.credit[i].date).split("-");
@@ -158,7 +180,7 @@ function draw_country_carbon_save_graph(server,cookie){
                 consumption[i]=tuple;
                 //console.log(result.credit[i].date);
             }
-            console.log(consumption);
+            //console.log(consumption);
             var country_carbon_save_graph = new CanvasJS.Chart("chart-04",
             {
 
