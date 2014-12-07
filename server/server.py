@@ -168,7 +168,7 @@ def add_food_choice():
     country_name= results[0]['name']
     
     response = {'score': score,'country':country_name}
-    action = Action(int(user_id), 1, debit, credit)
+    action = Action(int(user_id), 1, credit, debit)
     try:
         db.session.add(action)
         db.session.flush()
