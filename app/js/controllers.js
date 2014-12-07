@@ -135,9 +135,20 @@ angular.module('starter.controllers', ['ngCookies'])
     $scope.bad = "bad" + (Math.floor(Math.random() * 3) + 1) + ".png"
     $scope.score = $stateParams.score
 
-})
-
-
-.controller('TasksCtrl', function($scope) {
+}).controller('TasksCtrl', function($scope) {
+    $scope.tasks = [ { id: 1, title: "Buy organically grown food"}]
+}).controller('TaskCtrl', function($scope,$stateParams, $http,$location) {
+    $scope.id  = $stateParams.id
+    $scope.task =  { id: 1, title: "Buy organically grown food",content:"In addition to the health benefits, the pesticides and artificial fertilizers used on non ­organic food are made using lots of fossil fuel and venting much greenhouse gas."}
     
+    $scope.complete = function(id) {
+        alert("complete " + id)
+        $location.path("/tab/tasks")
+    }
+    
+    $scope.dismiss = function(id) {
+        alert("dismiss " + id)
+        $location.path("/tab/tasks")
+    }
+
 });
