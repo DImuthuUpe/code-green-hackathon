@@ -19,6 +19,9 @@ Routes:
       { "score" : "-100" }
     Example Error:
       { "error" : "True" }
+      
+  /add_task:
+    Requires user cookie, ...
 
   /stats:
     Requires the user cookie.
@@ -49,6 +52,11 @@ Routes:
           [{"date": "2014-12-08", "value": 60.0}, {"date": "2014-12-07", "value": 20.0}, {"date": "2014-12-06", "value": 20.0}, {"date": "2014-12-05", "value": 0.0}, {"date": "2014-12-04", "value": 20.0}, {"date": "2014-12-03", "value": 0.0}, {"date": "2014-12-02", "value": 0.0}, {"date": "2014-12-01", "value": 12.0}, {"date": "2014-11-29", "value": 30.0}]
       }
       
+  /user_actions:
+    Requires the user cookie.
+    Example Response:
+      {"actions": [{"action": "Food", "count": 5}, {"action": "Travel", "count": 7}, {"action": "Household", "count": 4}]}
+      
   /country_time_series:
     Requires the user cookie.
     Example Response:
@@ -58,8 +66,6 @@ Routes:
         "debit": 
           [{"date": "2014-11-29", "value": 60.0}, {"date": "2014-11-30", "value": 0.0}, {"date": "2014-12-01", "value": 65.0}, {"date": "2014-12-02", "value": 0.0}, {"date": "2014-12-03", "value": 5.0}, {"date": "2014-12-04", "value": 43.0}, {"date": "2014-12-05", "value": 7.0}, {"date": "2014-12-06", "value": 20.0}, {"date": "2014-12-07", "value": 43.0}, {"date": "2014-12-08", "value": 60.0}]
       }
-  /add_task:
-    Requires user cookie, ...
 """
 
 
@@ -255,6 +261,21 @@ def user_time_series():
       response['debit'].append({'date': '{0}'.format(row[0]), 'value': row[1]})
 
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
+    
+@app.route('/user_actions', methods=['GET'])
+@cross_origin()
+def user_actions():
+    user_registration = request.args.get('registration')
+    user = User.query.filter_by(registration=user_registration).first()
+    
+    number_to_string = {'1': 'Food', '2': 'Travel', '3': 'Household'}
+    response = {'actions': []}
+    
+    actions = Action.query.with_entities(Action.action_type_id, func.count(Action.id)).filter_by(user_id=user.id).group_by(Action.action_type_id).all()
+    for action in actions:
+      response['actions'].append({'action': number_to_string[str(action[0])], 'count': action[1]})
+    
+    return Response(json.dumps(response), mimetype='application/json')
 
 @app.route('/country_time_series', methods=['GET'])
 @cross_origin()
