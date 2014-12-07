@@ -24,20 +24,19 @@ db = SQLAlchemy(app)
 @app.route('/ping/<cookie>')
 @cross_origin()
 def ping(cookie):
-    sql = 'select id from user where registration = "' + cookie + '"'
-
-    result = run_query(db, sql)
-    if len(result) < 1:
+    try:
+      result = { 'id': User.query.filter_by(registration=cookie).first().id }
+    except:
       result = {}
-      
     return Response(json.dumps(result), mimetype='application/json')
     
 @app.route('/countries')
 @cross_origin()
 def countries():
-    sql = 'select id, name from country'
-    countries = run_query(db, sql, multi=True)
-
+    countries = []
+    country_list = Country.query.all()
+    for country in country_list:
+      countries.append({'id': country.id, 'name': country.name})
     return Response(json.dumps(countries), mimetype='application/json')
 
 @app.route('/foods')
