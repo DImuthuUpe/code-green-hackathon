@@ -115,7 +115,7 @@ class Task(db.Model):
   """ Implements the Task model. """
   __tablename__ = "task"
   id = db.Column('id', db.Integer, primary_key=True)
-  user_id = db.Column('user_id', db.Integer, db.ForeignKey("user.id"))
+  user_id = db.Column('user_id', db.Integer)
   task_id = db.Column('task_id', db.Integer)
   status = db.Column('status', db.String(1))
   created_date = db.Column('created_date', db.DateTime)

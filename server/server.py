@@ -187,9 +187,7 @@ def add_food_choice():
         db.session.commit()
     except:
         db.session.rollback()
-        #response = {'error': True}
-    
-    
+
     return Response(json.dumps(response), mimetype='application/json')
 
 @app.route('/stats', methods=['GET'])
@@ -421,21 +419,56 @@ def assign_task(user_id):
             db.session.rollback()
             print "Error creating task"
 
-@app.route('/p_tasks', methods=['GET'])                                                                                         
-@cross_origin()                                                                                                                 
-def get_p_tasks():                                                                                                              
-    user_registration = request.args.get('registration')                                                                        
-    if not user_registration:                                                                                                   
-      return Response(json.dumps({}), mimetype='application/json')                                                              
-                                                                                                                                
-    user_id = User.query.filter_by(registration=user_registration).first().id()                                                 
-    tasks = Task.query.filter_by(user_id=user_id, status='P').all()                                                             
-                                                                                                                                
-    response = {'tasks': []}                                                                                                    
-    task_list = []                                                                                                              
-    for task in tasks:                                                                                                          
-      response['tasks'].append(dict(task))                                                                                      
-    return Response(json.dumps(response), mimetype='application/json') 
+@app.route('/p_tasks', methods=['GET'])
+@cross_origin()
+def get_p_tasks():
+    user_registration = request.args.get('registration')
+    if not user_registration:
+      return Response(json.dumps({}), mimetype='application/json')
+
+    user_id = User.query.filter_by(registration=user_registration).first().id
+    tasks = Task.query.filter_by(user_id=user_id, status='P').all()
+
+    response = {'tasks': []}
+    task_list = []
+    for task in tasks:
+      response['tasks'].append(dict(task))
+    return Response(json.dumps(response), mimetype='application/json')
+    
+@app.route('/get_task', methods=['GET'])
+@cross_origin()
+def get_task_by_id():
+    task_id = request.args.get('task_id')
+    if not task_id:
+      return Response(json.dumps({}), mimetype='application/json')
+
+    task = Task.query.get(int(task_id))
+    print task.user_id
+    
+    response = {'task': dict(task)}
+    return Response(json.dumps(response), mimetype='application/json')
+
+@app.route('/update_task', methods=['POST'])
+@cross_origin()
+def update_task():
+    user_data = json.loads(request.data)
+    task_id = user_data["task_id"]
+    status = user_data["status"]
+    if not task_id:
+      return Response(json.dumps({}), mimetype='application/json')
+
+    response = {}
+    try:
+      db.session.query(Task).update({"id": task_id, "status": status})
+      db.session.flush()
+      db.session.commit()
+      response = {'success': True}
+    except:
+      db.session.rollback()
+      response = {'success': False}
+
+    return Response(json.dumps(response), mimetype='application/json')
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081, threaded=True)
