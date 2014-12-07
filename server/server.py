@@ -117,8 +117,8 @@ def stats():
     # Calculate trends.
     credit_trend = None
     debit_trend = None
-    credit_rows = Action.query.filter_by(user_id=user.id).order_by(Action.carbon_credit.desc()).limit(2).all()
-    debit_rows = Action.query.filter_by(user_id=user.id).order_by(Action.carbon_debit.desc()).limit(2).all()
+    credit_rows = Action.query.filter_by(user_id=user.id).order_by(Action.created_date.desc()).limit(2).all()
+    debit_rows = Action.query.filter_by(user_id=user.id).order_by(Action.created_date.desc()).limit(2).all()
     if len(credit_rows) == 2:
       credit_trend = 'up' if credit_rows[0] < credit_rows[1] else 'down'
     if len(debit_rows) == 2:
