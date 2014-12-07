@@ -2,17 +2,17 @@
   <ion-content class="padding">
     <div class="row">
         <div class="col" style="text-align:center">
-            <img src="img/healthy.png" alt="" />
+            <img ng-src="img/{{good}}" alt="" />
         </div>
     </div>
     <div class="row" style="padding:10px">
           <div class="col col-33 col-offset-33" style="text-align:center">
-            <a class="button button-positive" ng-click="do_something()">
-              Do Something
-            </a>              
-              
+            <div class="card">
+              <div class="item item-text-wrap">
+                <h1 style="color:green">{{score}}</h1>
+              </div>
+            </div>
           </div>
     </div>
-
   </ion-content>
 </ion-view>

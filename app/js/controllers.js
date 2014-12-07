@@ -43,7 +43,36 @@ angular.module('starter.controllers', ['ngCookies'])
     }
     
 })
-.controller('HomeCtrl', function($scope,$rootScope,$location) {
+.controller('HomeCtrl', function($scope,$rootScope,$http,$location,$cookies) {
+    $scope.total_tasks = 0;
+    $scope.total_points = 0;
+    
+     $http.get($rootScope.host+"/user?registration=" + $cookies.puppyEarth)
+            .success(function (data) {
+                $scope.total_tasks = data.total_tasks;
+                $scope.total_points = data.total_points;
+                
+                $('#points').sparkline([10,6,7,8,9,10],
+                    {
+                        type: 'bar',
+                        height: '40',
+                        barWidth: 6,
+                        chartRangeMin :0,
+                        chartRangeMax :10,
+                        barColor: '#00bf00',
+                        negBarColor: '#f04040 '
+                    });
+                $('#tasks').easyPieChart({
+                    barColor: '#00bf00',
+                    trackColor: '#E2E2E2',
+                    scaleColor: false,
+                    lineCap: 'butt',
+                    lineWidth: 5,
+                    animate: 1000,
+                    size: 50
+                });        
+                
+            })
 })
 
 .controller('StatsCtrl', function($scope,$rootScope, $http) {
@@ -67,9 +96,9 @@ angular.module('starter.controllers', ['ngCookies'])
         ).success(function (data) {
             console.log(data)
              if( data.score <= 0 ) {
-                $location.path( "/tab/good" )
+                $location.path( "/tab/good/" + Math.abs(data.score) )
              } else {
-                $location.path( "/tab/bad" )
+                $location.path( "/tab/bad/" + Math.abs(data.score) )
              }
         })
 
@@ -77,7 +106,10 @@ angular.module('starter.controllers', ['ngCookies'])
     }
 })
 
-.controller('ResultCtrl', function($scope,$rootScope, $http) {
+.controller('ResultCtrl', function($scope,$stateParams, $http) {
+    $scope.good = "healthy.png"
+    $scope.bad = "bad" + (Math.floor(Math.random() * 3) + 1) + ".png"
+    $scope.score = $stateParams.score
 
 })
 

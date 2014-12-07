@@ -148,11 +148,11 @@ def add_food_choice():
     
     score = int(food_carbon - average)
     if score > 0:
-      debit = score
-      credit = 0
-    else:
       debit = 0
-      credit = score
+      credit = abs(score)
+    else:
+      debit = abs(score)
+      credit = 0
 
     response = {'score': score}
     action = Action(int(user_id), 1, debit, credit)
@@ -225,6 +225,7 @@ def stats():
     target = target_days * float(carbon_per_capita_per_day) * 0.8 * 1000
     
     response = {
+      'total_actions': 23, # replace with count
       'total_credit': total_credit,
       'total_debit': total_debit,
       'credit_trend': credit_trend,
@@ -234,6 +235,15 @@ def stats():
     
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
 
+@app.route('/user', methods=['GET'])
+@cross_origin()
+def user_data():
+    response = {
+      'total_points': 1500, # replace with count
+      'total_tasks': 45,        
+    }
+    return Response(json.dumps(response), mimetype='application/json')
+    
 @app.route('/user_time_series', methods=['GET'])
 @cross_origin()
 def user_time_series():

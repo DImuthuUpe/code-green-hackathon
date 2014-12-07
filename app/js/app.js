@@ -56,20 +56,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     })
     .state('tab.good', {
-      url: '/good',
+      url: '/good/:score',
       views: {
         'tab-home': {
           templateUrl: 'templates/good.html',
-          controller: 'SelectCtrl'
+          controller: 'ResultCtrl'
         }
       }
     })
     .state('tab.bad', {
-      url: '/bad',
+      url: '/bad/:score',
       views: {
         'tab-home': {
           templateUrl: 'templates/bad.html',
-          controller: 'SelectCtrl'
+          controller: 'ResultCtrl'
         }
       }
     })

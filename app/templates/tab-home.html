@@ -6,6 +6,36 @@
         </div>
     </div>
     <div class="row" style="padding:10px">
+          <div class="col col-25 col-offset-25" style="text-align:center">
+            <div class="card">
+              <div class="item item-text-wrap">
+                    <span id="points"></span>
+                    <div style="display: inline-block;padding-left:10px">
+                        <div><small><strong>Points</strong></small></div>
+                        <div class="percent">{{total_points}}</div>
+                    </div>          
+              </div>
+            </div>          
+          </div>
+          <div class="col col-25" style="text-align:center">
+            <div class="card">
+              <div class="item item-text-wrap">
+                <div style="padding-top: 0px;display: inline-block;vertical-align: top;width: 44px;">              
+                    <span id="tasks" class="easy-pie-chart percentage" data-percent="42" data-size="46">
+                        <span class="percent">{{total_task}}</span>%
+                    </span>
+                </div>
+                <div style="display: inline-block;padding-left: 10px">
+                    <div><small><strong>Task</strong></small></div>
+                    <div><small>Completed</small></div>
+                </div>
+              </div>
+            </div>          
+          </div>
+    </div>
+
+
+    <div class="row" style="padding:10px">
           <div class="col col-33 col-offset-33" style="text-align:center">
             <a class="button button-positive" href="#/tab/select">
               Do Something
