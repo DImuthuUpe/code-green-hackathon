@@ -66,6 +66,14 @@ Routes:
         "debit": 
           [{"date": "2014-11-29", "value": 60.0}, {"date": "2014-11-30", "value": 0.0}, {"date": "2014-12-01", "value": 65.0}, {"date": "2014-12-02", "value": 0.0}, {"date": "2014-12-03", "value": 5.0}, {"date": "2014-12-04", "value": 43.0}, {"date": "2014-12-05", "value": 7.0}, {"date": "2014-12-06", "value": 20.0}, {"date": "2014-12-07", "value": 43.0}, {"date": "2014-12-08", "value": 60.0}]
       }
+      
+   /user
+   Requires the user cookie
+   Example Response
+      {
+        "total_points": -88
+        "total_tasks": 1
+      }
 """
 
 
@@ -330,6 +338,40 @@ def register():
         response = {'cookie': ''}
         
     return Response(json.dumps(response), mimetype='application/json')
+    
+
+@app.route('/user', methods=['GET'])
+@cross_origin()
+def user():
+    user_registration = request.args.get('registration')
+    user = User.query.filter_by(registration=user_registration).first()
+    
+    sql = 'select sum(carbon_debit)-sum(carbon_credit) as points from action where user_id='+str(user.id);
+    results = run_query(db, sql);
+   
+    points=0;
+    if len(results) > 0:
+        points= results[0]['points']
+    else:
+        points = 0
+    
+    if(points is None):
+        points=0
+    
+    sql = 'select sum(id) from task where user_id='+str(user.id);
+    results = run_query(db, sql);
+    total_tasks=0
+    if len(results) > 0:
+        total_tasks= results[0]['sum(id)']
+    else:
+        total_tasks=0
+    
+    if(total_tasks is None):
+        total_tasks=0
+    
+    response = {'total_points': int(points),'total_tasks': int(total_tasks)}
+    return Response(json.dumps(response), mimetype='application/json')
+
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081, threaded=True)
