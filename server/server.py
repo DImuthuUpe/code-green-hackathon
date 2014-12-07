@@ -187,7 +187,9 @@ def add_food_choice():
         db.session.commit()
     except:
         db.session.rollback()
-
+        #response = {'error': True}
+    
+    
     return Response(json.dumps(response), mimetype='application/json')
 
 @app.route('/stats', methods=['GET'])
@@ -403,6 +405,7 @@ def user():
     return Response(json.dumps(response), mimetype='application/json')
     
 def assign_task(user_id):
+    #user_id = request.args.get('user_id')
     sql = 'select id from tasks where id not in (select task_id from task where user_id='+str(user_id)+' and status="P")'; 
     results = run_query(db, sql);
     if(len(results)>0):

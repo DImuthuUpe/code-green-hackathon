@@ -19,31 +19,12 @@ $( document ).ready(function() {
     });
 	
 	
-	var country_carbon_debit_chart = new CanvasJS.Chart("chart-01",
-    {
-       data: [
-
-        {
-            dataPoints: [
-                { x: 10, y: 297571, label: "Venezuela"},
-                { x: 20, y: 267017,  label: "Saudi" },
-                { x: 30, y: 175200,  label: "Canada"},
-                { x: 40, y: 154580,  label: "Iran"},
-                { x: 50, y: 116000,  label: "Russia"},
-                { x: 60, y: 97800, label: "UAE"},
-                { x: 70, y: 20682,  label: "US"},
-                { x: 80, y: 20350,  label: "China"}
-            ]
-        }
-      ]
-    });
-
-    country_carbon_debit_chart.render();
+	
     
     draw_user_action_graph('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
     draw_user_carbon_save_graph('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
     draw_country_carbon_save_graph('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
-    
+    draw_country_savings('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
     
     
     
@@ -64,7 +45,6 @@ function draw_user_action_graph(server,cookie){
                 var tuple={};
                 tuple.y= result.actions[i].count;
                 tuple.legendText=result.actions[i].action;
-                tuple.indexLabel=result.actions[i].action;
                 actionResult[i] = tuple;
                 //{  y: 4181563, legendText:"Food", indexLabel: "Food" }
             }
@@ -91,7 +71,7 @@ function draw_user_action_graph(server,cookie){
             });
             user_action_pichart.render();
             
-            console.log(actionResult);
+            //console.log(actionResult);
         }
     });
 }
@@ -165,6 +145,68 @@ function draw_country_carbon_save_graph(server,cookie){
                 ]
             });
             country_carbon_save_graph.render();
+        }
+    });
+}
+
+function draw_country_savings(server,cookie){
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+                
+        data: JSON.stringify({'registration':'Cookie1'}), //get the cookie from browse
+        url: server+":8081/top_countries",
+        type: "GET",
+        dataType: 'json',
+        success: function (result) {
+            var set1 =[];
+            var set2 =[];
+            //console.log(result);
+            // { x: 10, y: 297571, label: "Venezuela"}
+            for (var i = 0; i < result.savings.length; i++) {
+                var tuple1 = {};
+                tuple1.x = (i+1)*1;
+                tuple1.y = result.savings[i].savings;
+                tuple1.label=result.savings[i].country;
+                set1[i]=tuple1;
+                
+                var tuple2 = {};
+                tuple2.x = (i+1)*1;
+                tuple2.y = result.ratios[i].ratio;
+                tuple2.label=result.ratios[i].country;
+                set2[i]=tuple2;
+                //console.log(result.credit[i].date);
+            }
+            
+            
+            
+            var country_carbon_savings_chart = new CanvasJS.Chart("chart-01",
+            {
+                data: [
+                    {
+                        name: "Ratio (Carbon per capita / Average savings per person)",
+                        showInLegend: "true",
+                        dataPoints: set2
+                    }
+                ]
+            });
+        
+            country_carbon_savings_chart.render();
+            
+            var country_carbon_savings_chart2 = new CanvasJS.Chart("chart-05",
+            {
+                data: [
+                    {
+                        name: "Total Carbon Savings",
+                        showInLegend: "true",
+                        dataPoints: set1
+                    }
+                ]
+            });
+        
+            country_carbon_savings_chart2.render();
+            
+            
+            
         }
     });
 }
