@@ -95,6 +95,29 @@ def add_food_choice():
         response = {'error': True}
     
     return Response(json.dumps(response), mimetype='application/json')
+
+@app.route('/add_task', methods=['POST'])
+@cross_origin()
+def add_task():
+    user_data = json.loads(request.data)
+    user_registration = user_data['registration']
+    # Other request fields to be parsed here.
+    
+    user = User.query.filter_by(registration=user_registration).first()
+    
+    # TODO
+    
+    # task = Task(int(user_id), text, carbon_credit, carbon_debit)
+    # try:
+    #     db.session.add(task)
+    #     db.session.flush()
+    #     db.session.commit()
+    #     response = {}
+    # except:
+    #     db.session.rollback()
+    #     response = {}
+    
+    # return Response(json.dumps(response), mimetype='application/json')
     
 @app.route('/stats', methods=['POST'])
 @cross_origin()

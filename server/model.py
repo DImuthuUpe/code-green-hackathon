@@ -109,3 +109,29 @@ class ActionType(db.Model):
 
   def __repr__(self):
     return '<Action Type %r>' % (self.id)
+
+
+class Task(db.Model):
+  """ Implements the Task model. """
+  __tablename__ = "task"
+  id = db.Column('id', db.Integer, primary_key=True)
+  user_id = db.Column('user_id', db.Integer, db.ForeignKey("user.id"))
+  text = db.Column('text', db.String(45))
+  status = db.Column('status', db.Bool)
+  created_date = db.Column('created_date', db.DateTime)
+  carbon_credit = db.Column('carbon_credit', db.Float(precision=10))
+  carbon_debit = db.Column('carbon_debit', db.Float(precision=10))
+
+  def __init__(self, user_id, text, carbon_credit, carbon_debit):
+    self.user_id = user_id
+    self.text = text
+    self.status = False
+    self.created_date = datetime.datetime.utcnow()
+    self.carbon_credit = carbon_credit
+    self.carbon_debit = carbon_debit
+
+  def get_id(self):
+    return unicode(self.id)
+
+  def __repr__(self):
+    return '<Task %r>' % (self.id)
