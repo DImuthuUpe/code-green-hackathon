@@ -20,9 +20,6 @@ Routes:
     Example Error:
       { "error" : "True" }
       
-  /add_task:
-    Requires user cookie, ...
-
   /stats:
     Requires the user cookie.
     Example Response:
@@ -78,12 +75,12 @@ Routes:
       }      
   
   /user
-  Requires the user cookie
-  Example Response
-    {
-      "total_points": -88
-      "total_tasks": 1
-    }
+    Requires the user cookie
+    Example Response
+      {
+        "total_points": -88
+        "total_tasks": 1
+      }
 """
 
 
@@ -193,29 +190,6 @@ def add_food_choice():
 
     return Response(json.dumps(response), mimetype='application/json')
 
-@app.route('/add_task', methods=['POST'])
-@cross_origin()
-def add_task():
-    user_data = json.loads(request.data)
-    user_registration = user_data['registration']
-    # Other request fields to be parsed here.
-    
-    user = User.query.filter_by(registration=user_registration).first()
-    
-    # TODO
-    
-    # task = Task(int(user_id), text, carbon_credit, carbon_debit)
-    # try:
-    #     db.session.add(task)
-    #     db.session.flush()
-    #     db.session.commit()
-    #     response = {}
-    # except:
-    #     db.session.rollback()
-    #     response = {}
-    
-    # return Response(json.dumps(response), mimetype='application/json')
-    
 @app.route('/stats', methods=['GET'])
 @cross_origin()
 def stats():
@@ -388,7 +362,6 @@ def register():
         response = {'cookie': ''}
         
     return Response(json.dumps(response), mimetype='application/json')
-    
 
 @app.route('/user', methods=['GET'])
 @cross_origin()
@@ -429,7 +402,6 @@ def user():
     response = {'total_points': int(points),'total_tasks': int(total_tasks),'recent_points':recent_points}
     return Response(json.dumps(response), mimetype='application/json')
     
-  
 def assign_task(user_id):
     sql = 'select id from tasks where id not in (select task_id from task where user_id='+str(user_id)+' and status="P")'; 
     results = run_query(db, sql);
@@ -445,8 +417,6 @@ def assign_task(user_id):
         except:
             db.session.rollback()
             print "Error creating task"
-
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081, threaded=True)
-    
