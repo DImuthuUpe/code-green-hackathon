@@ -28,13 +28,15 @@
           <li><a href="#">Technical Support</a></li>
         </ul>
       </div>
+      
     </div>
   </div>
-
+    
+          
   <div class="container-fluid">
     <div class="row">
 
-      <div class="col-sm-8">
+      <div class="col-sm-6">
         <div class="chart-wrapper">
           <div class="chart-title">
             Carbon saved by countries over time (Top Five Countries)
@@ -55,6 +57,23 @@
           </div>
           <div class="chart-stage">
             <div id="chart-02" style="height:300px"></div>
+          </div>
+          <div class="chart-notes">
+            Notes go down here
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-sm-2">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Global notifications
+          </div>
+          <div class="chart-stage">
+            <div style="height:300px;overflow-y:scroll">
+                <ul id='notification_ul'>
+                </ul>
+            </div>
           </div>
           <div class="chart-notes">
             Notes go down here
@@ -110,10 +129,12 @@
     Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
   </script>
 
+  <script src="https://cdn.pubnub.com/pubnub.min.js"></script>
   <script src="./assets/lib/keen-js/dist/keen.min.js"></script>
   <script src="./assets/js/meta.js"></script>
   <script src="./assets/js/global.dashboard.js"></script>
   <script type="text/javascript" src="./assets/lib/canvasjs/canvasjs.min.js"></script>
+  
   <script type="text/javascript">
       
   </script>

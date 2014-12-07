@@ -2,6 +2,22 @@
 $( document ).ready(function() {
 	
 	
+	var PUBNUB_api = PUBNUB.init({
+          publish_key: 'pub-c-55cf3b7d-b27b-478a-99f3-158762ffcf86',
+          subscribe_key: 'sub-c-1c9e1394-7a15-11e4-82cc-02ee2ddab7fe'
+    });
+        
+    PUBNUB_api.subscribe({
+        channel: 'codegreen_channel',
+        message: function(m){
+            console.log(m);
+            var msg = m.country + " saved "+m.amount +" kg amount of Carbon";
+            var newMsg = '<li style="height:15px:">'+msg+'</li>'
+            var prevHtml =$('#notification_ul').html();
+            $('#notification_ul').html(prevHtml+newMsg);
+        }
+    });
+	
 	
 	var country_carbon_debit_chart = new CanvasJS.Chart("chart-01",
     {
