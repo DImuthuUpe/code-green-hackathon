@@ -368,8 +368,15 @@ def user():
     
     if(total_tasks is None):
         total_tasks=0
+        
+    sql = "select (carbon_debit-carbon_credit) as points from action where user_id ="+str(user.id)+" order by created_date desc limit 6";
+    results = run_query(db, sql);
+    recent_points = results
+    for i in range(len(recent_points)):
+        recent_points[i]=int(recent_points[i]['points']);
     
-    response = {'total_points': int(points),'total_tasks': int(total_tasks)}
+    
+    response = {'total_points': int(points),'total_tasks': int(total_tasks),'recent_points':recent_points}
     return Response(json.dumps(response), mimetype='application/json')
 
     
