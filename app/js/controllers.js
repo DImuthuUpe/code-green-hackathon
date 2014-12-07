@@ -76,14 +76,24 @@ angular.module('starter.controllers', ['ngCookies'])
 })
 
 .controller('StatsCtrl', function($scope,$rootScope, $http ,$cookies) {
+    $scope.delta = 0    
     $scope.total_debit = 0 
     $scope.total_credit = 0
+    $scope.image  = "up.png"
+    $scope.target = 0
     $http.get($rootScope.host+"/stats?registration=" + $cookies.puppyEarth )
         .success(function (data) {
+            $scope.target = Math.abs(data.target)
             $scope.total_debit = data.total_debit
             $scope.debit_trend = data.debit_trend            
             $scope.total_credit = data.total_credit
             $scope.credit_trend = data.credit_trend
+            $scope.delta = data.total_credit - data.total_debit
+            if( $scope.delta > 0 ) {
+                $scope.image  = "up.png"
+            } else {
+                $scope.image  = "down.png"
+            }
             
         })
     
@@ -106,10 +116,10 @@ angular.module('starter.controllers', ['ngCookies'])
             { registration:  $cookies.puppyEarth , food_id: id }
         ).success(function (data) {
             console.log(data)
-             if( data.score <= 0 ) {
+             if( data.score >= 0 ) {
                 $rootScope.pubnub.publish({
                     channel: 'codegreen_channel',
-                    message: {"country":"Sri Lanka","amount":Math.abs(data.score)} });
+                    message: {"country":data.country ,"amount":Math.abs(data.score)} });
                 $location.path( "/tab/good/" + Math.abs(data.score) )
              } else {
                 $location.path( "/tab/bad/" + Math.abs(data.score) )
