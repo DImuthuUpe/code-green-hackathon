@@ -369,7 +369,7 @@ def user():
     user_registration = request.args.get('registration')
     user = User.query.filter_by(registration=user_registration).first()
     
-    sql = 'select sum(carbon_debit)-sum(carbon_credit) as points from action where user_id='+str(user.id);
+    sql = 'select sum(carbon_credit) as points from action where user_id='+str(user.id);
     results = run_query(db, sql);
    
     points=0;
@@ -392,7 +392,7 @@ def user():
     if(total_tasks is None):
         total_tasks=0
         
-    sql = "select (carbon_debit-carbon_credit) as points from action where user_id ="+str(user.id)+" order by created_date desc limit 6";
+    sql = "select carbon_credit as points from action where carbon_credit > 0 and  user_id ="+str(user.id)+" order by created_date desc limit 6";
     results = run_query(db, sql);
     recent_points = results
     for i in range(len(recent_points)):
