@@ -99,6 +99,7 @@ from sqlalchemy.sql import func
 
 from model import *
 from db_utils import *
+from random import randint
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_ECHO'] = False
@@ -166,9 +167,13 @@ def add_food_choice():
       average = 0
     
     score = int(average-food_carbon)
+    if(score==0):
+        score=1
+        
     if score < 0:
       debit = abs(score)
       credit = 0
+      assign_task(user_id) # New task is assigned because of negative score
     else:
       debit = 0
       credit = abs(score)
@@ -425,6 +430,25 @@ def user():
     
     response = {'total_points': int(points),'total_tasks': int(total_tasks),'recent_points':recent_points}
     return Response(json.dumps(response), mimetype='application/json')
+    
+    
+def assign_task(user_id):
+    #user_id = request.args.get('user_id')
+    sql = 'select id from tasks where id not in (select task_id from task where user_id='+str(user_id)+' and status="P")'; 
+    results = run_query(db, sql);
+    if(len(results)>0):
+        randomNum = randint(0,len(results)-1)
+        randomId = int(results[randomNum]['id'])
+        task = Task(int(user_id), randomId, 'P')
+        try:
+            db.session.add(task)
+            db.session.flush()
+            db.session.commit()
+            print "New task was assigned id "+str(randomId)
+        except:
+            db.session.rollback()
+            print "Error creating task"
+    
 
     
 if __name__ == "__main__":
