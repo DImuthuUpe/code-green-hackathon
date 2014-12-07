@@ -1,5 +1,5 @@
 #Puppy-Earth
-####A project started by team [CodeGreen](https://github.com/koding/global.hackathon/blob/master/Teams/CodeGreen/ABOUT.md) for Koding's Global Virtual Hackathon
+####A project started by team [CodeGreen](https://github.com/koding/global.hackathon/blob/master/Teams/CodeGreen/ABOUT.md) for [Koding](https://koding.com/)'s First Global Virtual Hackathon
 
 ###Description
 
