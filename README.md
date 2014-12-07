@@ -6,7 +6,7 @@
 ###Screenshots
 
 ### Technologies used:
-* MySQL
+* [MySQL](http://dev.mysql.com/)
 * [Flask](http://flask.pocoo.org/)
 * [Flask-SQLAlchemy](https://pythonhosted.org/Flask-SQLAlchemy/)
 * [Dashboards by Keen IO](https://github.com/keen/dashboards)
