@@ -1,3 +1,5 @@
+
+import datetime
 import uuid
 import json
 
@@ -5,6 +7,7 @@ from flask import Flask, render_template, request, Response
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.cors import cross_origin
 from sqlalchemy import text
+from sqlalchemy.sql import func
 
 from model import *
 from db_utils import *
@@ -93,6 +96,51 @@ def add_food_choice():
         response = {'error': True}
     
     return Response(json.dumps(response), mimetype='application/json')
+    
+@app.route('/stats', methods=['POST'])
+@cross_origin()
+def stats():
+    user_data = json.loads(request.data)
+    user_registration = user_data['registration']
+    user = User.query.filter_by(registration=user_registration).first()
+    
+    # Retrieve totals.
+    total_credit = 0
+    total_debit = 0
+    total_credit_list = Action.query.with_entities(func.sum(Action.carbon_credit).label('total_credit')).filter_by(user_id=user.id).first()
+    total_debit_list = Action.query.with_entities(func.sum(Action.carbon_debit).label('total_debit')).filter_by(user_id=user.id).first()
+    if len(total_credit_list) > 0:
+      total_credit = total_credit_list[0]
+    if len(total_debit_list) > 0:
+      total_debit = total_debit_list[0]
+
+    # Calculate trends.
+    credit_trend = None
+    debit_trend = None
+    credit_rows = Action.query.filter_by(user_id=user.id).order_by(Action.carbon_credit.desc()).limit(2).all()
+    debit_rows = Action.query.filter_by(user_id=user.id).order_by(Action.carbon_debit.desc()).limit(2).all()
+    if len(credit_rows) == 2:
+      credit_trend = 'up' if credit_rows[0] < credit_rows[1] else 'down'
+    if len(debit_rows) == 2:
+      debit_trend = 'up' if debit_rows[0] > debit_rows[1] else 'down'
+
+    # Calculate target.      
+    current_day_of_year = datetime.datetime.now().timetuple().tm_yday
+    registration_day_of_the_year = user.created_date.timetuple().tm_yday
+    target_days = 1 if (current_day_of_year - registration_day_of_the_year == 0) else current_day_of_year - registration_day_of_the_year
+    carbon_per_capita = Country.query.get(int(user.country_id)).carbon_per_capita_0
+    carbon_per_capita_per_day = carbon_per_capita / 365
+    target = target_days * float(carbon_per_capita_per_day) * 0.8
+    
+    response = {
+      'total_credit': total_credit,
+      'total_debit': total_debit,
+      'credit_trend': credit_trend,
+      'debit_trend': debit_trend,
+      'target': '{0:.3f}'.format(target)
+    }
+    
+    return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
     
 @app.route('/register', methods=['POST'])
 @cross_origin()
