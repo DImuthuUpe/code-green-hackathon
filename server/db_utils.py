@@ -23,10 +23,11 @@ def run_query(db, query, multi=False):
   for c in rows:
     if multi:
       for item in c:
-        print type(item)
       result.append(dict(c.items()))
     else:
       result.append(dict(c))
   connection.close()
+  
+  print result
   
   return result

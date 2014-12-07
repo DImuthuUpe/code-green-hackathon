@@ -59,14 +59,20 @@ def add_food_choice():
     user_data = json.loads(request.data)
     user_id = user_data['user_id']
     food_id = user_data['food_id']
-
-    sql = "select carbon_kilos from food where id = " + food_id
-    food_carbon = run_query(db, sql)
+      
+    try:
+      food_carbon = Food.query.get(int(food_id)).carbon_kilos
+    except:
+      food_carbon = 0
     
-    sql = "select average(carbon_kilos) from food"
-    average = run_query(db, sql)
+    sql = "select avg(carbon_kilos) from food"
+    results = run_query(db, sql)
+    if len(results) > 0:
+      average = results[0]['avg(carbon_kilos)']
+    else:
+      average = 0
     
-    score = food_carbon - average
+    score = int(food_carbon - average)
     if score > 0:
       debit = score
       credit = 0
