@@ -30,7 +30,7 @@ Routes:
         "total_debit": -9,
         "target": "0.041"
       }
-    and
+    and 
       {
         "credit_trend": "down",
         "debit_trend": "up",
@@ -109,13 +109,13 @@ def foods():
     foods = []
     
     sql = 'select id, name, image from food where carbon_kilos <= 10 order by rand() limit 1'
-    foods.append(run_query(db, sql, multi=True))
+    foods.extend(run_query(db, sql, multi=True))
 
     sql = 'select id, name, image from food where carbon_kilos > 10 and carbon_kilos <=20 order by rand() limit 2'
-    foods.append(run_query(db, sql, multi=True))
+    foods.extend(run_query(db, sql, multi=True))
 
     sql = 'select id, name, image from food where carbon_kilos > 20 order by rand() limit 1'
-    foods.append(run_query(db, sql, multi=True))
+    foods.extend(run_query(db, sql, multi=True))
 
     return Response(json.dumps(foods, default=decimal_default), mimetype='application/json')
 
@@ -183,11 +183,10 @@ def add_task():
     
     # return Response(json.dumps(response), mimetype='application/json')
     
-@app.route('/stats', methods=['POST'])
+@app.route('/stats', methods=['GET'])
 @cross_origin()
 def stats():
-    user_data = json.loads(request.data)
-    user_registration = user_data['registration']
+    user_registration = request.args.get('registration')
     user = User.query.filter_by(registration=user_registration).first()
     
     # Retrieve totals.
@@ -216,7 +215,7 @@ def stats():
     target_days = 1 if (current_day_of_year - registration_day_of_the_year == 0) else current_day_of_year - registration_day_of_the_year
     carbon_per_capita = Country.query.get(int(user.country_id)).carbon_per_capita_0
     carbon_per_capita_per_day = carbon_per_capita / 365
-    target = target_days * float(carbon_per_capita_per_day) * 0.8
+    target = target_days * float(carbon_per_capita_per_day) * 0.8 * 1000
     
     response = {
       'total_credit': total_credit,
@@ -228,11 +227,10 @@ def stats():
     
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
 
-@app.route('/user_time_series', methods=['POST'])
+@app.route('/user_time_series', methods=['GET'])
 @cross_origin()
 def user_time_series():
-    user_data = json.loads(request.data)
-    user_registration = user_data['registration']
+    user_registration = request.args.get('registration')
     user = User.query.filter_by(registration=user_registration).first()
     
     response = {
@@ -258,11 +256,10 @@ def user_time_series():
 
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
 
-@app.route('/country_time_series', methods=['POST'])
+@app.route('/country_time_series', methods=['GET'])
 @cross_origin()
 def country_time_series():
-    user_data = json.loads(request.data)
-    user_registration = user_data['registration']
+    user_registration = request.args.get('registration')
     user = User.query.filter_by(registration=user_registration).first()
 
     response = {
