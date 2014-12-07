@@ -247,7 +247,7 @@ def user_time_series():
       group_by(Action.created_date).\
       order_by(Action.created_date.desc()).limit(1000).all()
     for row in summed_credits:
-      response['credit'].append({'{0}'.format(row[0]): row[1]})
+      response['credit'].append({'date': '{0}'.format(row[0]), 'value': row[1]})
 
     summed_debits = Action.query.\
       with_entities(Action.created_date, func.sum(Action.carbon_debit.label('total_debit'))).\
@@ -255,7 +255,7 @@ def user_time_series():
       group_by(Action.created_date).\
       order_by(Action.created_date.desc()).limit(1000).all()
     for row in summed_debits:
-      response['debit'].append({'{0}'.format(row[0]): row[1]})
+      response['debit'].append({'date': '{0}'.format(row[0]), 'value': row[1]})
 
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
 
@@ -277,14 +277,14 @@ def country_time_series():
       filter_by(country_id=user.country_id).\
       limit(1000).all()
     for row in summed_credits:
-      response['credit'].append({'{0}'.format(row[0]): row[1]})
+      response['credit'].append({'date': '{0}'.format(row[0]), 'value': row[1]})
       
     summed_debits = Action.query.with_entities(Action.created_date, func.sum(Action.carbon_debit.label('total_debit'))).\
       join(User, User.id == Action.user_id).\
       group_by(Action.created_date, User.country_id).\
       limit(1000).all()
     for row in summed_debits:
-      response['debit'].append({'{0}'.format(row[0]): row[1]})
+      response['debit'].append({'date': '{0}'.format(row[0]), 'value': row[1]})
 
     return Response(json.dumps(response, default=decimal_default), mimetype='application/json')
 
