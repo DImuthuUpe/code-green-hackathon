@@ -94,61 +94,84 @@ $( document ).ready(function() {
     country_carbon_debit_chart.render();
     
     
-    var user_carbon_save_graph = new CanvasJS.Chart("chart-03",
-    {
-
-       data: [
-      {        
-        type: "splineArea",
-        color:"#881515",
-        dataPoints: [
-        { x: new Date(2012, 00, 1), y: 1352 },
-        { x: new Date(2012, 01, 1), y: 1514 },
-        { x: new Date(2012, 02, 1), y: 1321 },
-        { x: new Date(2012, 03, 1), y: 1163 },
-        { x: new Date(2012, 04, 1), y: 950 },
-        { x: new Date(2012, 05, 1), y: 1201 },
-        { x: new Date(2012, 06, 1), y: 1186 },
-        { x: new Date(2012, 07, 1), y: 1281 },
-        { x: new Date(2012, 08, 1), y: 1438 },
-        { x: new Date(2012, 09, 1), y: 1305 },
-        { x: new Date(2012, 10, 1), y: 1480 },
-        { x: new Date(2012, 11, 1), y: 1291 }        
-        ]
-      }
-        
-      ]
-    });
-
-    user_carbon_save_graph.render();
+    
+    draw_user_carbon_save_graph('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
+    draw_country_carbon_save_graph('http://udkkb47b1650.dimuthuupe.koding.io','Cookie1');
     
     
-    var country_carbon_save_graph = new CanvasJS.Chart("chart-04",
-    {
-
-       data: [
-      {        
-        type: "splineArea",
-        color:"#0E75C3",
-        dataPoints: [
-        { x: new Date(2012, 00, 1), y: 1352 },
-        { x: new Date(2012, 01, 1), y: 1514 },
-        { x: new Date(2012, 02, 1), y: 1321 },
-        { x: new Date(2012, 03, 1), y: 1163 },
-        { x: new Date(2012, 04, 1), y: 950 },
-        { x: new Date(2012, 05, 1), y: 1201 },
-        { x: new Date(2012, 06, 1), y: 1186 },
-        { x: new Date(2012, 07, 1), y: 1281 },
-        { x: new Date(2012, 08, 1), y: 1438 },
-        { x: new Date(2012, 09, 1), y: 1305 },
-        { x: new Date(2012, 10, 1), y: 1480 },
-        { x: new Date(2012, 11, 1), y: 1291 }        
-        ]
-      }
-        
-      ]
-    });
-
-    country_carbon_save_graph.render();
+    
     
 });
+
+function draw_user_carbon_save_graph(server,cookie){
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+                
+        data: JSON.stringify({'registration':'Cookie1'}), //get the cookie from browse
+        url: server+":8081/user_time_series?registration="+cookie,
+        type: "GET",
+        dataType: 'json',
+        success: function (result) {
+            var consumption =[];
+            console.log(result);
+            for (var i = 0; i < result.credit.length; i++) {
+                var tuple = {};
+                var dates = (result.credit[i].date).split("-");
+                tuple.x = new Date(dates[0],dates[1]-1,dates[2]);
+                tuple.y = result.debit[i].value-result.credit[i].value;
+                consumption[i]=tuple;
+                //console.log(result.credit[i].date);
+            }
+            //console.log(consumption);
+            var user_carbon_save_graph = new CanvasJS.Chart("chart-03",
+            {
+
+               data: [
+                    {        
+                    type: "splineArea",
+                    color:"#881515",
+                    dataPoints: consumption
+                    }
+              ]
+            });
+            user_carbon_save_graph.render();
+        }
+    });
+}
+
+function draw_country_carbon_save_graph(server,cookie){
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+                
+        data: JSON.stringify({'registration':'Cookie1'}), //get the cookie from browse
+        url: server+":8081/country_time_series?registration="+cookie,
+        type: "GET",
+        dataType: 'json',
+        success: function (result) {
+            var consumption =[];
+            console.log(result);
+            for (var i = 0; i < result.credit.length; i++) {
+                var tuple = {};
+                var dates = (result.credit[i].date).split("-");
+                tuple.x = new Date(dates[0],dates[1]-1,dates[2]);
+                tuple.y = result.debit[i].value-result.credit[i].value;
+                consumption[i]=tuple;
+                //console.log(result.credit[i].date);
+            }
+            console.log(consumption);
+            var country_carbon_save_graph = new CanvasJS.Chart("chart-04",
+            {
+
+                data: [
+                    {        
+                    type: "splineArea",
+                    color:"#0E75C3",
+                    dataPoints:consumption
+                    }
+                    
+                ]
+            });
+            country_carbon_save_graph.render();
+        }
+    });
+}
