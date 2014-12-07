@@ -7,3 +7,4 @@ code-green-hackathon
 * Flask
 * SQLAlchemy
 * AngularJS
+* Ionic
