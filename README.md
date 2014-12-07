@@ -14,7 +14,7 @@
 * [JQuery](http://ww.jquery.org/)
 * [Dashboards by Keen IO](https://github.com/keen/dashboards)
 * [CanvasJS](http://canvasjs.com/)
-* [Ionic Frameword](http://ionicframework.com/)
+* [Ionic Framework](http://ionicframework.com/)
 
 ### APIS used:
 * [PubNub API](http://www.pubnub.com/)
