@@ -6,7 +6,7 @@ This is an application that provides information about the global warming and in
 
 ###Instructions:
 * Fully compatible with Google Chrome
-* For a live demo of this app click [here](http://umkkeb295ebf.madytyoo.koding.io/app/).
+* For a live demo of this app click [here](http://menivaitsi.koding.io/app/).
 * The Global Dashboard can be accessed [here](http://udkkb47b1650.dimuthuupe.koding.io/dashboard/).
 
 ### Technologies used:
