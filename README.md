@@ -25,18 +25,18 @@ This is an application that provides information about the global warming and in
 * [World Bank Open Data](http://data.worldbank.org/)
 
 ###Screenshots
-Landing Page
+####Landing Page
 ![Landing Page](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/landing.png "Landing Page")
 
-Home Page
+####Home
 ![Home Page](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/home_2.png "Home Page")
 
-Stats
+####Stats
 ![Stats Page](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/stats_good.png "Stats Page")
 
-Tasks
+####Tasks
 ![Tasks Page](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/tasks_2.png "Tasks Page")
 
-Global Dashboard
+####Global Dashboard
 ![Global Dashboard](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/global_dashboard.png "Global Dashboard")
 
