@@ -381,17 +381,24 @@ def user():
     if(points is None):
         points=0
     
-    sql = 'select sum(id) from task where user_id='+str(user.id);
+    sql = "select count(id) as c from task where user_id="+str(user.id);
     results = run_query(db, sql);
     total_tasks=0
     if len(results) > 0:
-        total_tasks= results[0]['sum(id)']
+        total_tasks= results[0]['c']
     else:
-        total_tasks=0
-    
-    if(total_tasks is None):
-        total_tasks=0
+        total_tasks=1
         
+    sql = "select count(id) as c from task  where  status = 'C' and user_id="+str(user.id);
+    results = run_query(db, sql);
+    total_completed = 0
+    if len(results) > 0:
+        total_completed= results[0]['c']
+    else:
+        total_completed = 0
+        
+    total_tasks = 100 * total_completed / total_tasks
+
     sql = "select carbon_credit as points from action where carbon_credit > 0 and  user_id ="+str(user.id)+" order by created_date desc limit 6";
     results = run_query(db, sql);
     recent_points = results
@@ -419,55 +426,58 @@ def assign_task(user_id):
             db.session.rollback()
             print "Error creating task"
 
-@app.route('/p_tasks', methods=['GET'])
+@app.route('/task', methods=['GET'])
 @cross_origin()
 def get_p_tasks():
+    response = []
     user_registration = request.args.get('registration')
     if not user_registration:
       return Response(json.dumps({}), mimetype='application/json')
 
     user_id = User.query.filter_by(registration=user_registration).first().id
-    tasks = Task.query.filter_by(user_id=user_id, status='P').all()
+    connection = db.engine.connect()
+    sql = "select task.id,title from task,tasks where tasks.id = task.task_id and user_id = %s and status = 'P' order by created_date" % str(user_id);
+    rows = connection.execute(text(sql))
+    for c in rows:
+        response.append(dict(c.items()))
 
-    response = {'tasks': []}
-    task_list = []
-    for task in tasks:
-      response['tasks'].append(dict(task))
+    connection.close()
+    
+
     return Response(json.dumps(response), mimetype='application/json')
     
-@app.route('/get_task', methods=['GET'])
+@app.route('/tasks/<id>', methods=['GET'])
 @cross_origin()
-def get_task_by_id():
-    task_id = request.args.get('task_id')
-    if not task_id:
-      return Response(json.dumps({}), mimetype='application/json')
+def get_task_by_id(id):
+    response = {}            
+    if request.method == 'GET':
+        task = Task.query.get(int(id))
+        
+        connection = db.engine.connect()
+        sql = "select title,content  from tasks where id = %s " % str(task.task_id);
+        rows = connection.execute(text(sql))
+        for c in rows:
+            response = dict(c.items())
 
-    task = Task.query.get(int(task_id))
-    print task.user_id
+        response['id'] = id;    
+        connection.close()
+        
     
-    response = {'task': dict(task)}
-    return Response(json.dumps(response), mimetype='application/json')
+        return Response(json.dumps(response), mimetype='application/json')
 
-@app.route('/update_task', methods=['POST'])
+@app.route('/tasks/<id>/<status>', methods=['POST'])
 @cross_origin()
-def update_task():
-    user_data = json.loads(request.data)
-    task_id = user_data["task_id"]
-    status = user_data["status"]
-    if not task_id:
-      return Response(json.dumps({}), mimetype='application/json')
+def update_task(id,status):
+    print id
+    print status
+        
+    connection = db.engine.connect()
+    sql = "UPDATE task set status = '%s' where id = %s " % (status,str(id))
+    rows = connection.execute(text(sql))
+    connection.close()
+        
+    return Response(json.dumps({}), mimetype='application/json')        
 
-    response = {}
-    try:
-      db.session.query(Task).update({"id": task_id, "status": status})
-      db.session.flush()
-      db.session.commit()
-      response = {'success': True}
-    except:
-      db.session.rollback()
-      response = {'success': False}
-
-    return Response(json.dumps(response), mimetype='application/json')
 
 
 if __name__ == "__main__":

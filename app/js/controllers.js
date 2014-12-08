@@ -58,9 +58,14 @@ angular.module('starter.controllers', ['ngCookies'])
                 if(r == 1) {
                     $scope.mood = "healthy.png"
                 } else if(r == 2) {
-                    $scope.mood = "bad2.png"
-                } else  if(r == 3) {
                     $scope.mood = "hungry.png"
+                    
+                } else {
+                    $scope.mood = "bad2.png"
+                    $timeout(function(){
+                        $scope.mood = "healthy.png"
+                    },(Math.floor(Math.random() * 200) + 1000))
+                    
                 }
                 $('#points').sparkline(data.recent_points,
                     {
@@ -73,7 +78,7 @@ angular.module('starter.controllers', ['ngCookies'])
                         negBarColor: '#f04040 '
                     });
                 $('#tasks').easyPieChart({
-                    barColor: '#9ABC32',
+                    barColor: '#6FB3E0',
                     trackColor: '#E2E2E2',
                     scaleColor: false,
                     lineCap: 'butt',
@@ -81,6 +86,8 @@ angular.module('starter.controllers', ['ngCookies'])
                     animate: 1000,
                     size: 50
                 });        
+                
+                 $('#tasks').data('easyPieChart').update($scope.total_tasks);
                 
             })
 })
@@ -149,37 +156,55 @@ angular.module('starter.controllers', ['ngCookies'])
     }
 })
 
-.controller('ResultCtrl', function($scope,$stateParams, $http) {
+.controller('ResultCtrl', function($scope,$stateParams, $http,$location,$timeout) {
     $scope.good = "healthy.png"
     $scope.bad = "bad" + (Math.floor(Math.random() * 3) + 1) + ".png"
     $scope.score = $stateParams.score
+    $timeout(function(){
+        $location.path( "/tab/home" )
+    },3000)
 
-}).controller('TasksCtrl', function($scope,$timeout) {
+    
+
+}).controller('TasksCtrl', function($scope,$rootScope,$cookies,$http,$timeout) {
     $scope.index = 0
     $scope.tasks = []
-    $scope.list = [ { id: 1, title: "Buy organically grown food"},
-                    { id: 2, title: "Buyww organically grown food"}]
+    $scope.list = []
     
-    $timeout(function() {
-            for (var i = 0; i < $scope.list.length; i++) {
-                $timeout(function () {
-                    $scope.tasks.push( $scope.list[$scope.index++] );
-                }, 100 * i);
-            };
-        },200)
+    $http.get($rootScope.host+"/task?registration=" + $cookies.puppyEarth )
+        .success(function (data) {
+            $scope.list = data;
+            $timeout(function() {
+                    for (var i = 0; i < $scope.list.length; i++) {
+                        $timeout(function () {
+                            $scope.tasks.push( $scope.list[$scope.index++] );
+                        }, 100 * i);
+                    };
+                },200)
+        })        
+            
+}).controller('TaskCtrl', function($scope,$rootScope,$stateParams, $http,$location) {
+    $scope.task = {}
     
-}).controller('TaskCtrl', function($scope,$stateParams, $http,$location) {
-    $scope.id  = $stateParams.id
-    $scope.task =  { id: 1, title: "Buy organically grown food",content:"In addition to the health benefits, the pesticides and artificial fertilizers used on non ­organic food are made using lots of fossil fuel and venting much greenhouse gas."}
+    $http.get($rootScope.host+"/tasks/" +  $stateParams.id )
+        .success(function (data) {
+            $scope.task = data;
+        })
+    
     
     $scope.complete = function(id) {
-        alert("complete " + id)
-        $location.path("/tab/tasks")
+        $http.post( $rootScope.host + "/tasks/" + id + "/C", {  })
+            .success(function (data) {
+                $location.path("/tab/tasks")
+            })
+        
     }
     
     $scope.dismiss = function(id) {
-        alert("dismiss " + id)
-        $location.path("/tab/tasks")
+        $http.post( $rootScope.host + "/tasks/" + id + "/D", {  })
+            .success(function (data) {
+                $location.path("/tab/tasks")
+            })
     }
 
 });
