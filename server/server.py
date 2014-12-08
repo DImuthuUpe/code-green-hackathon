@@ -196,19 +196,42 @@ def stats():
     user_registration = request.args.get('registration')
     user = User.query.filter_by(registration=user_registration).first()
     
+    print user
+    
     # Retrieve totals.
     total_credit = 0
     total_debit = 0
-    total_credit_list = Action.query.with_entities(func.sum(Action.carbon_credit).label('total_credit')).filter_by(user_id=user.id).first()
-    total_debit_list = Action.query.with_entities(func.sum(Action.carbon_debit).label('total_debit')).filter_by(user_id=user.id).first()
-    if len(total_credit_list) > 0:
-      total_credit = total_credit_list[0]
-    if len(total_debit_list) > 0:
-      total_debit = total_debit_list[0]
+    
+    connection = db.engine.connect()
+    
+    sql1 = 'SELECT sum(carbon_credit) FROM action WHERE user_id = %s' % str(user.id)
+    sql2 = 'SELECT sum(carbon_debit) FROM action WHERE user_id = %s' % str(user.id)
+    rows = connection.execute(text(sql1))
+    for c  in rows:
+        total_credit = c[0]
 
+    rows = connection.execute(text(sql2))
+    for d  in rows:
+        total_debit = d[0]
+
+    
+    
+    print  total_credit, total_debit
+    
+    #total_credit_list = Action.query.with_entities(func.sum(Action.carbon_credit).label('total_credit')).filter_by(user_id=user.id).first()
+    #total_debit_list = Action.query.with_entities(func.sum(Action.carbon_debit).label('total_debit')).filter_by(user_id=user.id).first()
+    #if len(total_credit_list) > 0:
+    #  total_credit = total_credit_list[0]
+    #if len(total_debit_list) > 0:
+    #  total_debit = total_debit_list[0]
+
+    print  total_credit, total_debit
     # Calculate trends.
-    credit_trend = None
-    debit_trend = None
+    credit_trend = ""
+    debit_trend = ""
+    
+    
+    
     credit_rows = Action.query.filter_by(user_id=user.id).order_by(Action.created_date.desc()).limit(2).all()
     debit_rows = Action.query.filter_by(user_id=user.id).order_by(Action.created_date.desc()).limit(2).all()
     if len(credit_rows) == 2:
@@ -220,9 +243,12 @@ def stats():
     current_day_of_year = datetime.datetime.now().timetuple().tm_yday
     registration_day_of_the_year = user.created_date.timetuple().tm_yday
     target_days = 1 if (current_day_of_year - registration_day_of_the_year == 0) else current_day_of_year - registration_day_of_the_year
+    
     carbon_per_capita = Country.query.get(int(user.country_id)).carbon_per_capita_0
     carbon_per_capita_per_day = carbon_per_capita / 365
     target = target_days * float(carbon_per_capita_per_day) * 0.8 * 1000
+    
+    connection.close()
     
     response = {
       'total_credit': total_credit,

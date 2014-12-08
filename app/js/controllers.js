@@ -98,7 +98,8 @@ angular.module('starter.controllers', ['ngCookies'])
     $scope.total_credit = 0
     $scope.image  = "up.png"
     $scope.target = 0
-    $http.get($rootScope.host+"/stats?registration=" + $cookies.puppyEarth )
+    var d = new Date();
+    $http.get($rootScope.host+"/stats?registration=" + $cookies.puppyEarth + "&" + d.getTime() )
         .success(function (data) {
             $scope.target = Math.abs(data.target)
             $scope.total_debit = data.total_debit
