@@ -148,8 +148,13 @@ def add_food_choice():
     user_registration = user_data['registration']
     food_id = user_data['food_id']
 
-    user_id = User.query.filter_by(registration=user_registration).first().id
-    country_id = User.query.filter_by(registration=user_registration).first().country_id
+    # user_id = User.query.filter_by(registration=user_registration).first().id
+    # country_id = User.query.filter_by(registration=user_registration).first().country_id
+    
+    sql = "select id, country_id from user where registration = '" + user_registration + "'"
+    user = run_query(db, sql)
+    user_id = user[0]['id']
+    country_id = user[0]['country_id']
     
     try:
       food_carbon = Food.query.get(int(food_id)).carbon_kilos

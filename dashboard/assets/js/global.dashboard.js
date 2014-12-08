@@ -21,10 +21,10 @@ $( document ).ready(function() {
 	
 	
     
-    draw_user_action_graph('http://umkkeb295ebf.madytyoo.koding.io','Cookie1');
-    draw_user_carbon_save_graph('http://umkkeb295ebf.madytyoo.koding.io','Cookie1');
-    draw_country_carbon_save_graph('http://umkkeb295ebf.madytyoo.koding.io','Cookie1');
-    draw_country_savings('http://umkkeb295ebf.madytyoo.koding.io','Cookie1');
+    draw_user_action_graph('http://menivaitsi.koding.io','Cookie1');
+    draw_user_carbon_save_graph('http://menivaitsi.koding.io','Cookie1');
+    draw_country_carbon_save_graph('http://menivaitsi.koding.io','Cookie1');
+    draw_country_savings('http://menivaitsi.koding.io','Cookie1');
     
     
     
