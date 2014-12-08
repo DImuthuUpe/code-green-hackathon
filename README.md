@@ -7,9 +7,7 @@ This is an application that provides information about the global warming and in
 ###Instructions
 * Fully compatible with Google Chrome
 * For a live demo of this app click [here](http://umkkeb295ebf.madytyoo.koding.io/app/).
-* The Global Dashboard can be accessed [here](http://umkkeb295ebf.madytyoo.koding.io/dashboard/).
-
-###Screenshots
+* The Global Dashboard can be accessed [here](http://udkkb47b1650.dimuthuupe.koding.io/dashboard/).
 
 ### Technologies used:
 * Python
@@ -25,3 +23,20 @@ This is an application that provides information about the global warming and in
 ### APIs used:
 * [PubNub API](http://www.pubnub.com/)
 * [World Bank Open Data](http://data.worldbank.org/)
+
+###Screenshots
+####Landing Page
+![Landing Page](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/landing.png "Landing Page")
+
+####Home
+![Home Page](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/home_2.png "Home Page")
+
+####Stats
+![Stats Page](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/stats_good.png "Stats Page")
+
+####Tasks
+![Tasks Page](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/tasks_2.png "Tasks Page")
+
+####Global Dashboard
+![Global Dashboard](https://raw.githubusercontent.com/DImuthuUpe/code-green-hackathon/master/app/img/screenshots/global_dashboard.png "Global Dashboard")
+
